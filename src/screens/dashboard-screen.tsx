@@ -18,7 +18,7 @@ import { GamesScreen } from './games-screen';
 import { useTheme } from '@/contexts/theme-context';
 import { supabase } from '@/integrations/supabase/client';
 import { getProductByPriceId } from '@/stripe-config';
-import { Star, Target, Trophy, Zap, Brain, Timer, Shuffle, Flame, Award, RotateCcw, ChevronDown, ChevronLeft, ChevronRight, User, Settings, CreditCard, Bell, Shield, HelpCircle, Moon, Sun, Mail, Phone, Calendar, MapPin, Edit, LogOut, Crown, Sparkles, Grid, BookOpen, CheckCircle } from 'lucide-react';
+import { Star, Target, Trophy, Zap, Brain, Timer, Shuffle, Flame, Award, RotateCcw, ChevronDown, ChevronLeft, ChevronRight, User, Settings, CreditCard, Bell, Shield, CircleHelp as HelpCircle, Moon, Sun, Mail, Phone, Calendar, MapPin, CreditCard as Edit, LogOut, Crown, Sparkles, Grid2x2 as Grid, BookOpen, CircleCheck as CheckCircle } from 'lucide-react';
 import { Gamepad2 } from 'lucide-react';
 import { NotificationSettingsModal } from '@/components/notification-settings-modal';
 import { PrivacySettingsModal } from '@/components/privacy-settings-modal';

@@ -4,19 +4,7 @@ import { GradientCard } from '@/components/ui/gradient-card';
 import { GradientButton } from '@/components/ui/gradient-button';
 import { BottomNavigation } from '@/components/layout/bottom-navigation';
 // Removed game imports - quests don't launch games directly
-import { 
-  Trophy, 
-  Target, 
-  Star, 
-  CheckCircle, 
-  Clock, 
-  Award,
-  BookOpen,
-  Zap,
-  Crown,
-  Flame,
-  Lock
-} from 'lucide-react';
+import { Trophy, Target, Star, CircleCheck as CheckCircle, Clock, Award, BookOpen, Zap, Crown, Flame, Lock } from 'lucide-react';
 
 interface Quest {
   id: string;

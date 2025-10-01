@@ -5,21 +5,7 @@ import { GradientButton } from '@/components/ui/gradient-button';
 import { BottomNavigation } from '@/components/layout/bottom-navigation';
 import { MiniGameLauncher } from '@/components/mini-game-launcher';
 import { MiniGameUpgradeModal } from '@/components/mini-game-upgrade-modal';
-import { 
-  Gamepad2, 
-  Zap, 
-  Brain, 
-  Timer, 
-  Shuffle, 
-  Flame,
-  Sparkles,
-  Grid,
-  Crown,
-  Trophy,
-  Target,
-  Star,
-  ChevronDown
-} from 'lucide-react';
+import { Gamepad2, Zap, Brain, Timer, Shuffle, Flame, Sparkles, Grid2x2 as Grid, Crown, Trophy, Target, Star, ChevronDown } from 'lucide-react';
 
 interface GamesScreenProps {
   activeTab: string;
