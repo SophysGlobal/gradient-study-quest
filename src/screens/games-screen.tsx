@@ -229,22 +229,23 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
             return (
               <GradientCard 
                 key={game.id} 
-                className={`cursor-pointer hover:scale-[1.02] transition-transform ${isLocked ? 'opacity-60' : ''}`}
+                className="cursor-pointer hover:scale-[1.02] transition-transform"
+                onClick={() => isLocked ? setShowUpgradeModal(true) : setActiveGame(game.id)}
               >
-                <div className="space-y-4 relative">
+                <div className="space-y-4 relative text-center">
                   {isLocked && (
                     <div className="absolute top-2 right-2">
                       <Crown className="w-4 h-4 text-gradient-orange" />
                     </div>
                   )}
                   
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-col items-center gap-3">
                     <div className="gradient-outline rounded-lg p-2">
                       <div className="gradient-outline-content rounded-lg p-2">
                         <Icon className="w-6 h-6 text-gradient-purple" />
                       </div>
                     </div>
-                    <div className="flex-1">
+                    <div>
                       <h3 className="font-semibold text-text-primary">{game.title}</h3>
                       <p className="text-sm text-text-secondary">{game.description}</p>
                       <div className="flex items-center gap-2 mt-1">
@@ -261,14 +262,6 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
                       )}
                     </div>
                   </div>
-                  
-                  <GradientButton 
-                    onClick={() => isLocked ? setShowUpgradeModal(true) : setActiveGame(game.id)} 
-                    className="w-full"
-                    size="sm"
-                  >
-                    {isLocked ? 'Upgrade to Play' : 'Play Now'}
-                  </GradientButton>
                 </div>
               </GradientCard>
             );

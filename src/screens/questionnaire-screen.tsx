@@ -229,7 +229,21 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
         )}
 
         {/* Continue Button */}
-        <div className="fixed bottom-6 left-6 right-6 max-w-md mx-auto">
+        {canContinue && (
+          <div className="fixed bottom-6 left-6 right-6 max-w-md mx-auto z-10">
+            <GradientButton
+              size="lg"
+              className="w-full"
+              onClick={handleContinue}
+            >
+              Continue
+            </GradientButton>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
           <GradientButton
             size="lg"
             className="w-full"

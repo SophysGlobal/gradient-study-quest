@@ -210,7 +210,7 @@ export const QuestsScreen: React.FC<QuestsScreenProps> = ({
         </div>
 
         {/* Quests List */}
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredQuests.map((quest) => {
             const Icon = quest.icon;
             const progressPercentage = getProgressPercentage(quest.progress, quest.target);
