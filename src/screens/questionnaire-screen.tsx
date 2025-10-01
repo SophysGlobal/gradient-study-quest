@@ -71,7 +71,7 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
       
       <div className="relative z-10 flex-1 max-w-md mx-auto w-full">
         {/* Header */}
-          <div className="text-center mb-8 animate-fade-in">
+        <div className="text-center mb-8 animate-fade-in">
           <div className="flex items-center justify-center mb-4">
             <div className="flex space-x-2">
               <div className={`w-3 h-3 rounded-full transition-colors ${step >= 1 ? 'bg-gradient-purple' : 'bg-surface-muted'}`} />
@@ -228,9 +228,9 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
           </div>
         )}
 
-        {/* Continue Button */}
+        {/* Continue Button - Fixed positioning */}
         {canContinue && (
-          <div className="fixed bottom-6 left-6 right-6 max-w-md mx-auto z-10">
+          <div className="fixed bottom-6 left-6 right-6 max-w-md mx-auto z-50">
             <GradientButton
               size="lg"
               className="w-full"
@@ -240,19 +240,6 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
             </GradientButton>
           </div>
         )}
-      </div>
-    </div>
-  );
-};
-          <GradientButton
-            size="lg"
-            className="w-full"
-            onClick={handleContinue}
-            disabled={!canContinue}
-          >
-            Continue
-          </GradientButton>
-        </div>
       </div>
     </div>
   );
