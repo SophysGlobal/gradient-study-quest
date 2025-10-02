@@ -150,7 +150,7 @@ export const QuestsScreen: React.FC<QuestsScreenProps> = ({
   // Removed game component rendering - quests don't launch games directly
 
   return (
-    <div className="min-h-screen bg-background relative pb-20 page-transition">
+    <div className="min-h-screen bg-background relative pb-16 page-transition">
       <ParticleBackground />
       
       <div className="relative z-10 p-6 space-y-6">
@@ -198,7 +198,7 @@ export const QuestsScreen: React.FC<QuestsScreenProps> = ({
         </div>
 
         {/* Quests List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {filteredQuests.map((quest) => {
             const Icon = quest.icon;
             const progressPercentage = getProgressPercentage(quest.progress, quest.target);

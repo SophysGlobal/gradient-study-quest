@@ -135,13 +135,25 @@ export const AppSettings: React.FC<AppSettingsProps> = ({ onClose }) => {
               {settings.soundEnabled && (
                 <div className="space-y-2">
                   <p className="font-medium text-text-primary">Volume: {settings.soundVolume}%</p>
-                  <Slider
-                    value={[settings.soundVolume]}
-                    onValueChange={([value]) => updateSetting('soundVolume', value)}
-                    max={100}
-                    step={5}
-                    className="w-full"
-                  />
+                  <div className="relative">
+                    <div className="gradient-slider">
+                      <div 
+                        className="gradient-slider-track" 
+                        style={{ width: `${settings.soundVolume}%` }}
+                      />
+                      <div 
+                        className="gradient-slider-thumb"
+                        style={{ left: `${settings.soundVolume}%` }}
+                      />
+                    </div>
+                    <Slider
+                      value={[settings.soundVolume]}
+                      onValueChange={([value]) => updateSetting('soundVolume', value)}
+                      max={100}
+                      step={5}
+                      className="w-full absolute top-0 opacity-0"
+                    />
+                  </div>
                 </div>
               )}
 

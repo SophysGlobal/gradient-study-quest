@@ -146,7 +146,7 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-background relative pb-20 page-transition">
+    <div className="min-h-screen bg-background relative pb-16 page-transition">
       <ParticleBackground />
       
       <div className="relative z-10 flex flex-col h-screen">

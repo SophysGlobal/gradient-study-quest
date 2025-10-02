@@ -22,8 +22,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onTabChange,
 }) => {
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-surface-elevated/60 backdrop-blur-lg border-t border-card-border/30 z-50 transition-all duration-300">
-      <div className="flex justify-around items-center py-1 px-4 max-w-lg mx-auto gap-2">
+    <div className="nav-fixed bottom-0 left-0 right-0 bg-surface-elevated/80 backdrop-blur-sm border-t border-card-border/30">
+      <div className="flex justify-between items-center py-1 px-2 max-w-lg mx-auto">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -32,26 +32,26 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
-              className="flex flex-col items-center gap-0.5 py-1.5 px-1 transition-all duration-200 ease-out hover:bg-surface-muted/50 rounded-lg flex-1"
+              className="flex flex-col items-center gap-0.5 py-1 px-1 transition-all duration-200 ease-out hover:bg-surface-muted/50 rounded-lg flex-1"
             >
               <div className={cn(
-                'p-1.5 rounded-lg transition-all duration-200 ease-out',
+                'p-1 rounded-lg transition-all duration-200 ease-out',
                 isActive ? 'gradient-outline' : ''
               )}>
                 <div className={cn(
-                  'p-0.5 rounded-lg transition-all duration-200 ease-out',
+                  'p-1 rounded-lg transition-all duration-200 ease-out',
                   isActive && 'gradient-outline-content'
                 )}>
                   <Icon 
                     className={cn(
-                      'w-4 h-4 transition-colors duration-200 ease-out',
+                      'w-3.5 h-3.5 transition-colors duration-200 ease-out',
                       isActive ? 'text-gradient-purple' : 'text-text-muted'
                     )} 
                   />
                 </div>
               </div>
               <span className={cn(
-                'text-xs font-medium transition-colors duration-200 ease-out text-center',
+                'text-[10px] font-medium transition-colors duration-200 ease-out text-center leading-tight',
                 isActive ? 'gradient-text' : 'text-text-muted'
               )}>
                 {tab.label}

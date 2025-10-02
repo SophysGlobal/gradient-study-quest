@@ -270,6 +270,49 @@
   animation: page-enter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Prevent navigation bar from animating with page content */
+.nav-fixed {
+  position: fixed !important;
+  z-index: 50 !important;
+  animation: none !important;
+}
+
+/* Gradient slider styles */
+.gradient-slider {
+  position: relative;
+  height: 6px;
+  background: linear-gradient(90deg, hsl(var(--gradient-purple)), hsl(var(--gradient-orange)));
+  border-radius: 3px;
+}
+
+.gradient-slider-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, hsl(var(--gradient-purple)), hsl(var(--gradient-orange)));
+  border-radius: 3px;
+}
+
+.gradient-slider-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background: white;
+  border: 2px solid hsl(var(--gradient-purple));
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.gradient-slider-thumb:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
 /* 3D Card Flip Effects */
 .perspective-1000 {
   perspective: 1000px;

@@ -118,7 +118,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-background relative pb-20 page-transition">
+    <div className="min-h-screen bg-background relative pb-16 page-transition">
       <ParticleBackground />
       
       <div className="relative z-10 p-6 space-y-6">

@@ -961,7 +961,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   // Profile Tab (default)
   const subscriptionInfo = getSubscriptionInfo();
   
-  return <div className="min-h-screen bg-background relative pb-20 page-transition">
+    <div className="min-h-screen bg-background relative pb-16 page-transition">
       <ParticleBackground />
       
       <div className="relative z-10 p-6 space-y-6">

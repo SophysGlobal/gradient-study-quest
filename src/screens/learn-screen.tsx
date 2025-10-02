@@ -106,7 +106,7 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ selectedSubjects, subs
   }
 
   return (
-    <div className="min-h-screen bg-background relative pb-20 page-transition">
+    <div className="min-h-screen bg-background relative pb-16 page-transition">
       <div className="relative z-10 p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
@@ -188,7 +188,7 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ selectedSubjects, subs
           <div className="grid grid-cols-2 gap-3">
             {studyModes.map((mode) => {
               const Icon = mode.icon;
-              const isLocked = mode.requiresPremium && !hasPersonalPlus;
+              const isLocked = mode.requiresPremium && subscriptionTier !== 'Premium' && subscriptionTier !== 'Enterprise';
               
               return (
                 <button
