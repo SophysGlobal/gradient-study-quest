@@ -571,11 +571,8 @@ export const LearnModeLauncher: React.FC<LearnModeLauncherProps> = ({
   };
 
   const renderCurrentMode = () => {
-    if (mode === 'flashcards') {
-      return renderFlashcardMode();
-    } else {
-      return renderInteractiveMode();
-    }
+    // All modes use interactive rendering
+    return renderInteractiveMode();
   };
 
   if (loading) {

@@ -151,7 +151,7 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
       
       <div className="relative z-10 flex flex-col h-screen">
         {/* Header */}
-        <div className="p-4 border-b border-card-border bg-surface/80 backdrop-blur-sm">
+        <div className="flex-shrink-0 p-4 border-b border-card-border bg-surface/80 backdrop-blur-sm">
           <div className="flex items-center gap-3 mb-4">
             <div className="gradient-outline rounded-full p-1">
               <div className="gradient-outline-content rounded-full p-2">
@@ -229,7 +229,7 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4 pb-52">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-40">
           {messages.map(message => (
             <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
               <div className={`flex items-start gap-3 max-w-[80%]`}>

@@ -22,7 +22,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onTabChange,
 }) => {
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-surface-elevated/95 backdrop-blur-sm border-t border-card-border z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-surface-elevated/70 backdrop-blur-md border-t border-card-border/50 z-50 transition-all duration-300">
       <div className="flex justify-between items-center py-1 px-2 max-w-lg mx-auto">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -32,26 +32,26 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
-              className="flex flex-col items-center gap-0.5 py-1.5 px-1 transition-all duration-300 hover:bg-surface-muted rounded-lg flex-1"
+              className="flex flex-col items-center gap-0.5 py-1.5 px-1 transition-all duration-200 ease-out hover:bg-surface-muted/50 rounded-lg flex-1"
             >
               <div className={cn(
-                'p-1.5 rounded-lg transition-all duration-300',
+                'p-1.5 rounded-lg transition-all duration-200 ease-out',
                 isActive ? 'gradient-outline' : ''
               )}>
                 <div className={cn(
-                  'p-0.5 rounded-lg transition-all duration-300',
+                  'p-0.5 rounded-lg transition-all duration-200 ease-out',
                   isActive && 'gradient-outline-content'
                 )}>
                   <Icon 
                     className={cn(
-                      'w-4 h-4 transition-colors duration-300',
+                      'w-4 h-4 transition-colors duration-200 ease-out',
                       isActive ? 'text-gradient-purple' : 'text-text-muted'
                     )} 
                   />
                 </div>
               </div>
               <span className={cn(
-                'text-xs font-medium transition-colors duration-300 text-center',
+                'text-xs font-medium transition-colors duration-200 ease-out text-center',
                 isActive ? 'gradient-text' : 'text-text-muted'
               )}>
                 {tab.label}
