@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Brain, Target, Sparkles, Clock, MessageCircle, Grid2x2 as Grid, Lightbulb, PenTool, Crown } from 'lucide-react';
+import { BookOpen, Brain, Target, Sparkles, Clock, MessageCircle, Grid2x2 as Grid, Lightbulb, PenTool, Crown, Library } from 'lucide-react';
 import { GradientCard } from '@/components/ui/gradient-card';
 import { GradientButton } from '@/components/ui/gradient-button';
 import { LearnModeLauncher } from '@/components/learn-mode-launcher';
 import { FlashcardStudy } from '@/components/flashcard-study';
+import { PremadeFlashcardStudy } from '@/components/premade-flashcard-study';
 import { MiniGameUpgradeModal } from '@/components/mini-game-upgrade-modal';
 
 type StudyMode = 'learn' | 'test' | 'match' | 'spaced-repetition' | 'write' | 'practice';
@@ -18,6 +19,7 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ selectedSubjects, subs
   const [studyMode, setStudyMode] = useState<StudyMode>('learn');
   const [activeLauncher, setActiveLauncher] = useState<StudyMode | null>(null);
   const [activeFlashcards, setActiveFlashcards] = useState(false);
+  const [activePremadeFlashcards, setActivePremadeFlashcards] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const hasPersonalPlus = subscriptionTier === 'Premium' || subscriptionTier === 'Enterprise';
@@ -79,6 +81,16 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ selectedSubjects, subs
       <FlashcardStudy 
         selectedSubject={selectedSubject} 
         onClose={() => setActiveFlashcards(false)} 
+      />
+    );
+  }
+
+  // Handle pre-made flashcards separately
+  if (activePremadeFlashcards) {
+    return (
+      <PremadeFlashcardStudy 
+        selectedSubject={selectedSubject} 
+        onClose={() => setActivePremadeFlashcards(false)} 
       />
     );
   }
@@ -148,11 +160,11 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ selectedSubjects, subs
           </p>
           <div className="grid grid-cols-2 gap-3">
             <GradientButton
-              onClick={() => setActiveFlashcards(true)}
+              onClick={() => setActivePremadeFlashcards(true)}
               className="w-full"
               variant="secondary"
             >
-              <BookOpen className="w-4 h-4 mr-2" />
+              <Library className="w-4 h-4 mr-2" />
               Pre-Made
             </GradientButton>
             <GradientButton

@@ -150,7 +150,7 @@ export const QuestsScreen: React.FC<QuestsScreenProps> = ({
   // Removed game component rendering - quests don't launch games directly
 
   return (
-    <div className="min-h-screen bg-background relative pb-20">
+    <div className="min-h-screen bg-background relative pb-20 page-transition">
       <ParticleBackground />
       
       <div className="relative z-10 p-6 space-y-6">
