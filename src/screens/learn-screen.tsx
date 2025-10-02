@@ -106,10 +106,10 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ selectedSubjects, subs
   }
 
   return (
-    <div className="min-h-screen bg-background relative pb-16 page-transition">
-      <div className="relative z-10 p-6 space-y-6">
+    <div className="min-h-screen bg-background relative pb-16">
+      <div className="relative z-10 p-6 space-y-6 page-content">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-6 stagger-item">
         <div className="gradient-outline rounded-full p-1">
           <div className="gradient-outline-content p-2">
             <BookOpen className="w-6 h-6 text-gradient-purple" />
@@ -122,7 +122,7 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ selectedSubjects, subs
       </div>
 
       {/* Subject Selection */}
-      <GradientCard>
+      <GradientCard className="stagger-item">
         <div className="p-4">
           <h3 className="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-gradient-orange" />
@@ -149,7 +149,7 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ selectedSubjects, subs
       </GradientCard>
 
       {/* Flashcards Section */}
-      <GradientCard>
+      <GradientCard className="stagger-item">
         <div className="p-4">
           <h3 className="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-gradient-purple" />
@@ -179,7 +179,7 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ selectedSubjects, subs
       </GradientCard>
 
       {/* Study Mode Selector */}
-      <GradientCard>
+      <GradientCard className="stagger-item">
         <div className="p-4">
           <h3 className="text-lg font-semibold text-text-primary mb-3 flex items-center gap-2">
             <Brain className="w-5 h-5 text-gradient-orange" />

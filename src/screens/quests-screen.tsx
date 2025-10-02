@@ -150,12 +150,12 @@ export const QuestsScreen: React.FC<QuestsScreenProps> = ({
   // Removed game component rendering - quests don't launch games directly
 
   return (
-    <div className="min-h-screen bg-background relative pb-16 page-transition">
+    <div className="min-h-screen bg-background relative pb-16">
       <ParticleBackground />
-      
-      <div className="relative z-10 p-6 space-y-6">
+
+      <div className="relative z-10 p-6 space-y-6 page-content">
         {/* Header */}
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-4 stagger-item">
           <h1 className="text-2xl font-bold gradient-text">Quest Hub</h1>
           <p className="text-text-secondary">Complete quests to earn XP, tokens, and badges!</p>
           
@@ -181,7 +181,7 @@ export const QuestsScreen: React.FC<QuestsScreenProps> = ({
         </div>
 
         {/* Filters */}
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <div className="flex gap-2 overflow-x-auto pb-2 stagger-item">
           {['all', 'daily', 'weekly', 'achievement'].map((filter) => (
             <button
               key={filter}
@@ -198,7 +198,7 @@ export const QuestsScreen: React.FC<QuestsScreenProps> = ({
         </div>
 
         {/* Quests List */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3 stagger-item">
           {filteredQuests.map((quest) => {
             const Icon = quest.icon;
             const progressPercentage = getProgressPercentage(quest.progress, quest.target);
