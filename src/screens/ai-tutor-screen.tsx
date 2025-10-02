@@ -146,10 +146,10 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-background relative pb-16 page-transition">
+    <div className="min-h-screen bg-background relative pb-16">
       <ParticleBackground />
-      
-      <div className="relative z-10 flex flex-col h-screen">
+
+      <div className="relative z-10 flex flex-col h-screen page-content">
         {/* Header */}
         <div className="flex-shrink-0 p-4 border-b border-card-border bg-surface/80 backdrop-blur-sm">
           <div className="flex items-center gap-3 mb-4">

@@ -118,12 +118,12 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-background relative pb-16 page-transition">
+    <div className="min-h-screen bg-background relative pb-16">
       <ParticleBackground />
-      
-      <div className="relative z-10 p-6 space-y-6">
+
+      <div className="relative z-10 p-6 space-y-6 page-content">
         {/* Header */}
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-4 stagger-item">
           <div className="flex items-center justify-center gap-3">
             <div className="gradient-outline rounded-full p-1">
               <div className="gradient-outline-content rounded-full p-2">
@@ -158,7 +158,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
         </div>
 
         {/* Subject Selection */}
-        <div className="relative">
+        <div className="relative stagger-item">
           <button
             onClick={() => setShowSubjectDropdown(!showSubjectDropdown)}
             className="w-full gradient-outline rounded-lg p-1"
@@ -190,7 +190,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
         </div>
 
         {/* Category Filters */}
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <div className="flex gap-2 overflow-x-auto pb-2 stagger-item">
           {gameCategories.map((category) => (
             <button
               key={category}
@@ -207,7 +207,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
         </div>
 
         {/* Games Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 stagger-item">
           {filteredGames.map(game => {
             const Icon = game.icon;
             const isLocked = game.requiresPremium && !hasPersonalPlus;
@@ -255,7 +255,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
         </div>
 
         {/* Daily Challenges */}
-        <div className="space-y-4">
+        <div className="space-y-4 stagger-item">
           <h2 className="text-xl font-semibold text-text-primary flex items-center gap-2">
             <Trophy className="w-5 h-5 text-gradient-orange" />
             Daily Challenges
@@ -313,7 +313,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
         </div>
 
         {/* Leaderboard */}
-        <div className="space-y-4">
+        <div className="space-y-4 stagger-item">
           <h2 className="text-xl font-semibold text-text-primary flex items-center gap-2">
             <Trophy className="w-5 h-5 text-gradient-orange" />
             Weekly Leaderboard

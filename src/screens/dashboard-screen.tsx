@@ -156,12 +156,12 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   if (activeTab === 'dashboard') {
     const subscriptionInfo = getSubscriptionInfo();
     
-    return <div className="min-h-screen bg-background relative pb-20 page-transition">
+    return <div className="min-h-screen bg-background relative pb-20">
         <ParticleBackground />
-        
-        <div className="relative z-10 p-6 space-y-6">
+
+        <div className="relative z-10 p-6 space-y-6 page-content">
           {/* Greeting Header */}
-          <div className="text-center animate-fade-in">
+          <div className="text-center stagger-item">
             <div className="flex justify-between items-center mb-4">
               <div className="flex-1" />
               <div className="flex-1">
@@ -210,7 +210,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </div>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 stagger-item">
             <GradientCard className="cursor-pointer hover:scale-[1.02] transition-transform">
               <div 
                 className="flex items-center gap-3 p-4"
@@ -247,14 +247,14 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </div>
 
           {/* Progress Overview */}
-          <div className="space-y-4">
+          <div className="space-y-4 stagger-item">
             <h2 className="text-xl font-semibold text-text-primary flex items-center gap-2">
               <Trophy className="w-5 h-5 text-gradient-orange" />
               Your Progress
             </h2>
             
             {/* Weekly Progress Chart */}
-            <GradientCard>
+            <GradientCard className="stagger-item">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-text-primary">This Week</h3>
@@ -285,7 +285,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             </GradientCard>
             
             {/* Subject Progress */}
-            <GradientCard>
+            <GradientCard className="stagger-item">
               <div className="space-y-4">
                 <h3 className="font-semibold text-text-primary">Subject Mastery</h3>
                 
@@ -327,7 +327,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             </GradientCard>
             
             {/* Study Statistics */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 stagger-item">
               <GradientCard>
                 <div className="text-center space-y-3 p-4">
                   <div className="gradient-outline rounded-full p-1 w-16 h-16 mx-auto">
@@ -358,7 +358,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             </div>
             
             {/* Recent Achievements */}
-            <GradientCard>
+            <GradientCard className="stagger-item">
               <div className="space-y-4">
                 <h3 className="font-semibold text-text-primary flex items-center gap-2">
                   <Award className="w-5 h-5 text-gradient-orange" />
@@ -418,7 +418,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             </GradientCard>
             
             {/* Study Goals */}
-            <GradientCard>
+            <GradientCard className="stagger-item">
               <div className="space-y-4">
                 <h3 className="font-semibold text-text-primary flex items-center gap-2">
                   <Target className="w-5 h-5 text-gradient-purple" />
@@ -530,9 +530,9 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     
     return (
       <>
-        <div className="min-h-screen bg-background relative pb-20 page-transition">
+        <div className="min-h-screen bg-background relative pb-20">
           <ParticleBackground />
-          <div className="relative z-10 p-6">
+          <div className="relative z-10 p-6 page-content">
             <LearnScreen 
               selectedSubjects={selectedSubjects} 
               subscriptionTier={subscriptionTier}
@@ -593,9 +593,9 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       }
     };
 
-    return <div className="min-h-screen bg-background relative pb-20 page-transition">
+    return <div className="min-h-screen bg-background relative pb-20">
         <ParticleBackground />
-        <div className="relative z-10 p-6 space-y-6">
+        <div className="relative z-10 p-6 space-y-6 page-content">
           <h1 className="text-2xl font-bold text-text-primary text-center">Token Store</h1>
           
           <div className="text-center">
@@ -960,13 +960,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
   // Profile Tab (default)
   const subscriptionInfo = getSubscriptionInfo();
-  
-    <div className="min-h-screen bg-background relative pb-16 page-transition">
+
+  return <div className="min-h-screen bg-background relative pb-16">
       <ParticleBackground />
-      
-      <div className="relative z-10 p-6 space-y-6">
+
+      <div className="relative z-10 p-6 space-y-6 page-content">
         {/* Profile Header */}
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-4 stagger-item">
           <div className="gradient-outline rounded-full p-1 w-24 h-24 mx-auto">
             <div className="gradient-outline-content rounded-full w-full h-full bg-surface flex items-center justify-center">
               <User className="w-12 h-12 text-gradient-purple" />
@@ -994,7 +994,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
         {/* Subscription Status */}
         {subscriptionInfo && (
-          <GradientCard>
+          <GradientCard className="stagger-item">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold gradient-text">Subscription</h2>
@@ -1037,7 +1037,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         )}
 
         {/* Personal Information */}
-        <GradientCard>
+        <GradientCard className="stagger-item">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold gradient-text">Personal Information</h2>
@@ -1065,7 +1065,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         </GradientCard>
 
         {/* Account Settings */}
-        <GradientCard>
+        <GradientCard className="stagger-item">
           <div className="space-y-4">
             <h2 className="text-lg font-semibold gradient-text">Account Settings</h2>
             
@@ -1110,7 +1110,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         </GradientCard>
 
         {/* Study Statistics */}
-        <GradientCard>
+        <GradientCard className="stagger-item">
           <div className="space-y-4">
             <h2 className="text-lg font-semibold gradient-text">Study Statistics</h2>
             
@@ -1155,7 +1155,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         </GradientCard>
 
         {/* Support & Help */}
-        <GradientCard>
+        <GradientCard className="stagger-item">
           <div className="space-y-3">
             <h2 className="text-lg font-semibold gradient-text">Support & Help</h2>
             
@@ -1183,7 +1183,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         </GradientCard>
 
         {/* Logout */}
-        <GradientCard className="cursor-pointer hover:scale-[1.02]">
+        <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
           <button onClick={onLogout} className="flex items-center justify-center gap-3 w-full text-error">
             <LogOut className="w-5 h-5" />
             <span className="font-medium">Log Out</span>
