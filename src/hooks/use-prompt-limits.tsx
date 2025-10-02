@@ -14,8 +14,8 @@ export const usePromptLimits = (subscriptionTier?: string) => {
   const [usage, setUsage] = useState<PromptUsage>({
     dailyUsed: 0,
     monthlyUsed: 0,
-    dailyLimit: 5,
-    monthlyLimit: 30,
+    dailyLimit: 3,
+    monthlyLimit: 15,
     canUsePrompt: true
   });
   const [loading, setLoading] = useState(true);
@@ -46,9 +46,9 @@ export const usePromptLimits = (subscriptionTier?: string) => {
       setUsage({
         dailyUsed,
         monthlyUsed,
-        dailyLimit: 5,
-        monthlyLimit: 30,
-        canUsePrompt: hasUnlimitedPrompts || (dailyUsed < 5 && monthlyUsed < 30)
+        dailyLimit: 3,
+        monthlyLimit: 15,
+        canUsePrompt: hasUnlimitedPrompts || (dailyUsed < 3 && monthlyUsed < 15)
       });
     } catch (error) {
       console.error('Error fetching prompt usage:', error);
@@ -87,7 +87,7 @@ export const usePromptLimits = (subscriptionTier?: string) => {
         ...prev,
         dailyUsed: data.daily_prompts_used,
         monthlyUsed: data.monthly_prompts_used,
-        canUsePrompt: data.daily_prompts_used < 5 && data.monthly_prompts_used < 30
+        canUsePrompt: data.daily_prompts_used < 3 && data.monthly_prompts_used < 15
       }));
 
       return true;

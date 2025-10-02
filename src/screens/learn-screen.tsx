@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Brain, Target, Sparkles, Clock, MessageCircle, Grid, Lightbulb, PenTool, Crown } from 'lucide-react';
+import { BookOpen, Brain, Target, Sparkles, Clock, MessageCircle, Grid2x2 as Grid, Lightbulb, PenTool, Crown } from 'lucide-react';
 import { GradientCard } from '@/components/ui/gradient-card';
 import { GradientButton } from '@/components/ui/gradient-button';
 import { LearnModeLauncher } from '@/components/learn-mode-launcher';
@@ -94,7 +94,7 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ selectedSubjects, subs
   }
 
   return (
-    <div className="min-h-screen bg-background relative pb-20">
+    <div className="min-h-screen bg-background relative pb-20 page-transition">
       <div className="relative z-10 p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
@@ -144,15 +144,25 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ selectedSubjects, subs
             Flashcards
           </h3>
           <p className="text-sm text-text-secondary mb-4">
-            Study with AI-generated flashcards for {selectedSubject}
+            Study with flashcards for {selectedSubject}
           </p>
-          <GradientButton 
-            onClick={() => setActiveFlashcards(true)}
-            className="w-full"
-          >
-            <BookOpen className="w-4 h-4 mr-2" />
-            Start Flashcard Study
-          </GradientButton>
+          <div className="grid grid-cols-2 gap-3">
+            <GradientButton
+              onClick={() => setActiveFlashcards(true)}
+              className="w-full"
+              variant="secondary"
+            >
+              <BookOpen className="w-4 h-4 mr-2" />
+              Pre-Made
+            </GradientButton>
+            <GradientButton
+              onClick={() => setActiveFlashcards(true)}
+              className="w-full"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              AI Generated
+            </GradientButton>
+          </div>
         </div>
       </GradientCard>
 

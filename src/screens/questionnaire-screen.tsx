@@ -95,15 +95,16 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
         {/* Step 1: Usage Type */}
         {step === 1 && (
           <div className="space-y-4 transition-all duration-500 ease-out animate-in fade-in slide-in-from-bottom-4">
-            <h2 className="text-lg font-semibold text-text-primary mb-6">
+            <h2 className="text-lg font-semibold text-text-primary mb-6 animate-fade-in">
               How will you be using ADA?
             </h2>
-            
+
             <GradientCard
               selectable
               selected={usage === 'school'}
               onClick={() => handleUsageSelect('school')}
-              className="cursor-pointer"
+              className="cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] animate-slide-up"
+              style={{ animationDelay: '100ms' }}
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -112,7 +113,7 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
                     Supplement your classroom learning
                   </p>
                 </div>
-                <ChevronRight className="w-5 h-5 text-gradient-purple" />
+                <ChevronRight className={`w-5 h-5 text-gradient-purple transition-transform duration-300 ${usage === 'school' ? 'translate-x-1' : ''}`} />
               </div>
             </GradientCard>
 
@@ -120,7 +121,8 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
               selectable
               selected={usage === 'personal'}
               onClick={() => handleUsageSelect('personal')}
-              className="cursor-pointer"
+              className="cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] animate-slide-up"
+              style={{ animationDelay: '200ms' }}
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -129,7 +131,7 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
                     Self-directed AP preparation
                   </p>
                 </div>
-                <ChevronRight className="w-5 h-5 text-gradient-purple" />
+                <ChevronRight className={`w-5 h-5 text-gradient-purple transition-transform duration-300 ${usage === 'personal' ? 'translate-x-1' : ''}`} />
               </div>
             </GradientCard>
           </div>
@@ -148,19 +150,19 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
               {apSubjects.map((subject, index) => (
                 <div
                   key={subject}
-                  style={{ animationDelay: `${index * 30}ms` }}
-                  className={`gradient-outline rounded-lg p-1 cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] animate-in fade-in slide-in-from-left-2 ${
+                  style={{ animationDelay: `${index * 20}ms` }}
+                  className={`gradient-outline rounded-lg p-1 cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-lg animate-in fade-in slide-in-from-left-2 ${
                     selectedSubjects.includes(subject) ? 'gradient-outline-selected' : ''
                   }`}
                   onClick={() => handleSubjectToggle(subject)}
                 >
                   <div className="gradient-outline-content rounded-lg bg-surface p-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-text-primary">
+                      <span className="text-sm font-medium text-text-primary transition-colors duration-300">
                         {subject}
                       </span>
-                      <div className={`transition-all duration-300 ease-out ${
-                        selectedSubjects.includes(subject) ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
+                      <div className={`transition-all duration-500 ease-out ${
+                        selectedSubjects.includes(subject) ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-0 -rotate-90'
                       }`}>
                         <Check className="w-5 h-5 text-gaming-success" />
                       </div>
@@ -184,22 +186,23 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
                 selectable
                 selected={selectedTheme === 'light'}
                 onClick={() => handleThemeSelect('light')}
-                className="cursor-pointer"
+                className="cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] animate-slide-up"
+                style={{ animationDelay: '100ms' }}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="p-3 rounded-lg bg-white border border-gray-200">
+                    <div className="p-3 rounded-lg bg-white border border-gray-200 transition-transform duration-300 hover:rotate-12">
                       <Sun className="w-6 h-6 text-yellow-500" />
                     </div>
                     <div>
-                      <h3 className={`font-semibold ${selectedTheme === 'light' ? 'text-gray-900' : 'text-text-primary'}`}>Light Mode</h3>
-                      <p className={`text-sm ${selectedTheme === 'light' ? 'text-gray-600' : 'text-text-secondary'}`}>
+                      <h3 className={`font-semibold transition-colors duration-300 ${selectedTheme === 'light' ? 'text-gray-900' : 'text-text-primary'}`}>Light Mode</h3>
+                      <p className={`text-sm transition-colors duration-300 ${selectedTheme === 'light' ? 'text-gray-600' : 'text-text-secondary'}`}>
                         Clean and bright interface
                       </p>
                     </div>
                   </div>
-                  <div className={`transition-all duration-300 ease-out ${
-                    selectedTheme === 'light' ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
+                  <div className={`transition-all duration-500 ease-out ${
+                    selectedTheme === 'light' ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-0 -rotate-90'
                   }`}>
                     <Check className="w-5 h-5 text-gaming-success" />
                   </div>
@@ -210,22 +213,23 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
                 selectable
                 selected={selectedTheme === 'dark'}
                 onClick={() => handleThemeSelect('dark')}
-                className="cursor-pointer"
+                className="cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] animate-slide-up"
+                style={{ animationDelay: '200ms' }}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="p-3 rounded-lg bg-slate-800 border border-slate-600">
+                    <div className="p-3 rounded-lg bg-slate-800 border border-slate-600 transition-transform duration-300 hover:-rotate-12">
                       <Moon className="w-6 h-6 text-blue-400" />
                     </div>
                     <div>
-                      <h3 className={`font-semibold ${selectedTheme === 'dark' ? 'text-white' : 'text-text-primary'}`}>Dark Mode</h3>
-                      <p className={`text-sm ${selectedTheme === 'dark' ? 'text-slate-300' : 'text-text-secondary'}`}>
+                      <h3 className={`font-semibold transition-colors duration-300 ${selectedTheme === 'dark' ? 'text-white' : 'text-text-primary'}`}>Dark Mode</h3>
+                      <p className={`text-sm transition-colors duration-300 ${selectedTheme === 'dark' ? 'text-slate-300' : 'text-text-secondary'}`}>
                         Easy on the eyes, perfect for studying
                       </p>
                     </div>
                   </div>
-                  <div className={`transition-all duration-300 ease-out ${
-                    selectedTheme === 'dark' ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
+                  <div className={`transition-all duration-500 ease-out ${
+                    selectedTheme === 'dark' ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-0 -rotate-90'
                   }`}>
                     <Check className="w-5 h-5 text-gaming-success" />
                   </div>
@@ -235,15 +239,15 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
           </div>
         )}
 
-        {/* Continue Button - Fixed positioning with backdrop */}
-        <div className={`fixed bottom-0 left-0 right-0 z-50 transition-all duration-300 ease-out ${
+        {/* Continue Button - Fixed positioning with semi-transparent backdrop */}
+        <div className={`fixed bottom-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
           canContinue ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
         }`}>
-          <div className="backdrop-blur-md bg-background/80 border-t border-card-border px-6 py-4">
+          <div className="backdrop-blur-md bg-background/50 border-t border-card-border/30 px-6 py-4">
             <div className="max-w-md mx-auto">
               <GradientButton
                 size="lg"
-                className="w-full transition-transform duration-200 ease-out hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-lg active:scale-[0.97]"
                 onClick={handleContinue}
               >
                 Continue

@@ -156,7 +156,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   if (activeTab === 'dashboard') {
     const subscriptionInfo = getSubscriptionInfo();
     
-    return <div className="min-h-screen bg-background relative pb-20">
+    return <div className="min-h-screen bg-background relative pb-20 page-transition">
         <ParticleBackground />
         
         <div className="relative z-10 p-6 space-y-6">
@@ -530,7 +530,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     
     return (
       <>
-        <div className="min-h-screen bg-background relative pb-20">
+        <div className="min-h-screen bg-background relative pb-20 page-transition">
           <ParticleBackground />
           <div className="relative z-10 p-6">
             <LearnScreen 
@@ -593,7 +593,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       }
     };
 
-    return <div className="min-h-screen bg-background relative pb-20">
+    return <div className="min-h-screen bg-background relative pb-20 page-transition">
         <ParticleBackground />
         <div className="relative z-10 p-6 space-y-6">
           <h1 className="text-2xl font-bold text-text-primary text-center">Token Store</h1>
@@ -961,7 +961,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   // Profile Tab (default)
   const subscriptionInfo = getSubscriptionInfo();
   
-  return <div className="min-h-screen bg-background relative pb-20">
+  return <div className="min-h-screen bg-background relative pb-20 page-transition">
       <ParticleBackground />
       
       <div className="relative z-10 p-6 space-y-6">
