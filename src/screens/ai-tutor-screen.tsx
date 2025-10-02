@@ -8,7 +8,7 @@ import { MiniGameUpgradeModal } from '@/components/mini-game-upgrade-modal';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { usePromptLimits } from '@/hooks/use-prompt-limits';
-import { Bot, Send, User, Loader2, Brain, Sparkles, MessageCircle, Check } from 'lucide-react';
+import { Bot, Send, User, Loader as Loader2, Brain, Sparkles, MessageCircle, Check } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -41,9 +41,10 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [focusSubjects, setFocusSubjects] = useState<string[]>(selectedSubjects);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [limitType, setLimitType] = useState<'daily' | 'monthly'>('daily');
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   const { usage, incrementUsage, hasUnlimitedPrompts } = usePromptLimits(subscriptionTier);
 
   const getGreeting = () => {
@@ -77,6 +78,12 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
 
     // Check prompt limits for Personal plan users
     if (!hasUnlimitedPrompts && !usage.canUsePrompt) {
+      // Determine which limit was hit
+      if (usage.dailyUsed >= usage.dailyLimit) {
+        setLimitType('daily');
+      } else if (usage.monthlyUsed >= usage.monthlyLimit) {
+        setLimitType('monthly');
+      }
       setShowUpgradeModal(true);
       return;
     }
@@ -139,7 +146,7 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-background relative pb-20">
+    <div className="min-h-screen bg-background relative pb-20 page-transition">
       <ParticleBackground />
       
       <div className="relative z-10 flex flex-col h-screen">
@@ -333,6 +340,7 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
       <MiniGameUpgradeModal
         isOpen={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
+        limitType={limitType}
       />
       
       <BottomNavigation activeTab={activeTab} onTabChange={onTabChange} />

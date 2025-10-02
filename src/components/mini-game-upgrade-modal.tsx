@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { GradientButton } from '@/components/ui/gradient-button';
 import { GradientCard } from '@/components/ui/gradient-card';
-import { Crown, Building, Check, Loader2 } from 'lucide-react';
+import { Crown, Building, Check, Loader as Loader2 } from 'lucide-react';
 import { getProductsByMode } from '@/stripe-config';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
@@ -10,11 +10,13 @@ import { useToast } from '@/components/ui/use-toast';
 interface MiniGameUpgradeModalProps {
   isOpen: boolean;
   onClose: () => void;
+  limitType?: 'daily' | 'monthly' | 'feature';
 }
 
 export const MiniGameUpgradeModal: React.FC<MiniGameUpgradeModalProps> = ({
   isOpen,
-  onClose
+  onClose,
+  limitType = 'feature'
 }) => {
   const [selectedPlan, setSelectedPlan] = useState('');
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
@@ -129,18 +131,30 @@ export const MiniGameUpgradeModal: React.FC<MiniGameUpgradeModalProps> = ({
 
   const product = getProductForPlan('personal-plus', billingCycle);
 
+  const getTitle = () => {
+    if (limitType === 'daily') return 'Daily Prompts Exhausted';
+    if (limitType === 'monthly') return 'Monthly Prompts Exhausted';
+    return 'Unlock Premium Features';
+  };
+
+  const getDescription = () => {
+    if (limitType === 'daily') return "You've used all 3 of your daily prompts. Upgrade to Personal+ for unlimited AI tutoring.";
+    if (limitType === 'monthly') return "You've used all 15 of your monthly prompts. Upgrade to Personal+ for unlimited AI tutoring.";
+    return 'Get unlimited access to all mini-games and AI tutoring';
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center gradient-text">
-            Unlock Premium Mini-Games
+            {getTitle()}
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-6">
           <div className="text-center text-text-secondary text-sm">
-            Get unlimited access to all mini-games and AI tutoring
+            {getDescription()}
           </div>
 
           {/* Billing Toggle */}

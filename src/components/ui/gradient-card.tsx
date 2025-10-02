@@ -15,7 +15,7 @@ export const GradientCard = React.forwardRef<HTMLDivElement, GradientCardProps>(
       <div
         ref={ref}
         className={cn(
-          'card-gradient transition-all duration-300',
+          'card-gradient transition-all duration-300 ease-out',
           selectable && 'cursor-pointer hover:scale-[1.02]',
           selected && 'gradient-glow scale-[1.02]',
           className
@@ -23,7 +23,7 @@ export const GradientCard = React.forwardRef<HTMLDivElement, GradientCardProps>(
         onClick={onClick}
         {...props}
       >
-        <div className="card-gradient-content">
+        <div className="card-gradient-content transition-all duration-300 ease-out">
           {children}
         </div>
       </div>
