@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Bot, BookOpen, Gamepad2, Target, ShoppingBag, User } from 'lucide-react';
+import { Chrome as Home, Bot, BookOpen, Gamepad2, Target, ShoppingBag, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface BottomNavigationProps {
