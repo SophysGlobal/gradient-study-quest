@@ -159,7 +159,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     return <div className="min-h-screen bg-background relative pb-20">
         <ParticleBackground />
 
-        <div className="relative z-10 p-6 space-y-6 page-content">
+        <div className="relative z-10 p-6 space-y-6">
           {/* Greeting Header */}
           <div className="text-center stagger-item">
             <div className="flex justify-between items-center mb-4">
@@ -595,10 +595,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
     return <div className="min-h-screen bg-background relative pb-20">
         <ParticleBackground />
-        <div className="relative z-10 p-6 space-y-6 page-content">
-          <h1 className="text-2xl font-bold text-text-primary text-center">Token Store</h1>
+        <div className="relative z-10 p-6 space-y-6">
+          <h1 className="text-2xl font-bold text-text-primary text-center stagger-item">Token Store</h1>
           
-          <div className="text-center">
+          <div className="text-center stagger-item">
             <div className="gradient-outline rounded-full p-1 inline-block mt-2">
               <div className="gradient-outline-content rounded-full px-4 py-1">
                 <span className="gradient-text font-semibold">🪙 {userTokens.toLocaleString()} Tokens</span>
@@ -607,10 +607,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </div>
           
           {/* Avatars */}
-          <div className="space-y-3">
+          <div className="space-y-3 stagger-item">
             <h2 className="text-lg font-semibold gradient-text">Avatars</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">🐱</span>
@@ -628,7 +628,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </GradientButton>
                 </div>
               </GradientCard>
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">🦉</span>
@@ -646,7 +646,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </GradientButton>
                 </div>
               </GradientCard>
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">🐉</span>
@@ -664,7 +664,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </GradientButton>
                 </div>
               </GradientCard>
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">🤖</span>
@@ -682,7 +682,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </GradientButton>
                 </div>
               </GradientCard>
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">🧙‍♂️</span>
@@ -700,7 +700,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </GradientButton>
                 </div>
               </GradientCard>
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">🦄</span>
@@ -722,10 +722,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </div>
 
           {/* Power-ups */}
-          <div className="space-y-3">
+          <div className="space-y-3 stagger-item">
             <h2 className="text-lg font-semibold gradient-text">Power-ups</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">🛡️</span>
@@ -743,7 +743,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </GradientButton>
                 </div>
               </GradientCard>
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">⚡</span>
@@ -761,7 +761,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </GradientButton>
                 </div>
               </GradientCard>
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">💎</span>
@@ -779,7 +779,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </GradientButton>
                 </div>
               </GradientCard>
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">🔥</span>
@@ -797,7 +797,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </GradientButton>
                 </div>
               </GradientCard>
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">🎯</span>
@@ -815,7 +815,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </GradientButton>
                 </div>
               </GradientCard>
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">⏰</span>
@@ -837,10 +837,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           </div>
 
           {/* Special Items */}
-          <div className="space-y-3">
+          <div className="space-y-3 stagger-item">
             <h2 className="text-lg font-semibold gradient-text">Special Items</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">🏆</span>
@@ -858,7 +858,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </GradientButton>
                 </div>
               </GradientCard>
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">👑</span>
@@ -876,7 +876,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </GradientButton>
                 </div>
               </GradientCard>
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">🌟</span>
@@ -894,7 +894,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </GradientButton>
                 </div>
               </GradientCard>
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">💫</span>
@@ -912,7 +912,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </GradientButton>
                 </div>
               </GradientCard>
-              <GradientCard className="cursor-pointer hover:scale-[1.02]">
+              <GradientCard className="cursor-pointer hover:scale-[1.02] stagger-item">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">🎨</span>
@@ -964,7 +964,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   return <div className="min-h-screen bg-background relative pb-16">
       <ParticleBackground />
 
-      <div className="relative z-10 p-6 space-y-6 page-content">
+      <div className="relative z-10 p-6 space-y-6">
         {/* Profile Header */}
         <div className="text-center space-y-4 stagger-item">
           <div className="gradient-outline rounded-full p-1 w-24 h-24 mx-auto">
