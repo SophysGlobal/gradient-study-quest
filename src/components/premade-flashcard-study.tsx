@@ -248,15 +248,16 @@ export const PremadeFlashcardStudy: React.FC<PremadeFlashcardStudyProps> = ({
 
       {/* Main Flashcard */}
       <div className="flex justify-center">
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-2xl flashcard-container">
           <div className="gradient-outline rounded-2xl p-1">
-            <div 
-              className="gradient-outline-content rounded-2xl bg-surface cursor-pointer hover:scale-[1.02] transition-all duration-300 shadow-lg"
+            <div
+              className="gradient-outline-content rounded-2xl bg-surface cursor-pointer shadow-lg"
               onClick={flipCard}
               style={{ minHeight: '320px' }}
             >
-              <div className="relative h-full p-8">
-                {!isFlipped ? (
+              <div className={`flashcard-inner ${isFlipped ? 'flipped' : ''}`}>
+                {/* Front of card */}
+                <div className="flashcard-face flashcard-front relative h-full p-8" style={{ minHeight: '320px' }}>
                   <div className="h-full flex flex-col justify-center items-center text-center space-y-4">
                     <div className="gradient-outline rounded-full p-1 w-16 h-16">
                       <div className="gradient-outline-content rounded-full w-full h-full bg-surface flex items-center justify-center">
@@ -278,7 +279,32 @@ export const PremadeFlashcardStudy: React.FC<PremadeFlashcardStudyProps> = ({
                       </div>
                     </div>
                   </div>
-                ) : (
+
+                  {/* Card counter */}
+                  <div className="absolute top-4 right-4">
+                    <div className="gradient-outline rounded-full p-1">
+                      <div className="gradient-outline-content rounded-full px-3 py-1">
+                        <span className="text-sm font-medium text-gradient-purple">
+                          {currentIndex + 1} / {flashcards.length}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Learned indicator */}
+                  {currentCard?.learned && (
+                    <div className="absolute top-4 left-4">
+                      <div className="gradient-outline rounded-full p-1">
+                        <div className="gradient-outline-content rounded-full p-2">
+                          <Check className="w-4 h-4 text-gaming-success" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Back of card */}
+                <div className="flashcard-face flashcard-back relative h-full p-8" style={{ minHeight: '320px' }}>
                   <div className="h-full flex flex-col justify-center items-center text-center space-y-6">
                     <div className="gradient-outline rounded-full p-1 w-16 h-16">
                       <div className="gradient-outline-content rounded-full w-full h-full bg-surface flex items-center justify-center">
@@ -290,29 +316,29 @@ export const PremadeFlashcardStudy: React.FC<PremadeFlashcardStudyProps> = ({
                       {currentCard.back}
                     </p>
                   </div>
-                )}
-                
-                {/* Card counter */}
-                <div className="absolute top-4 right-4">
-                  <div className="gradient-outline rounded-full p-1">
-                    <div className="gradient-outline-content rounded-full px-3 py-1">
-                      <span className="text-sm font-medium text-gradient-purple">
-                        {currentIndex + 1} / {flashcards.length}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Learned indicator */}
-                {currentCard?.learned && (
-                  <div className="absolute top-4 left-4">
+
+                  {/* Card counter */}
+                  <div className="absolute top-4 right-4">
                     <div className="gradient-outline rounded-full p-1">
-                      <div className="gradient-outline-content rounded-full p-2">
-                        <Check className="w-4 h-4 text-gaming-success" />
+                      <div className="gradient-outline-content rounded-full px-3 py-1">
+                        <span className="text-sm font-medium text-gradient-purple">
+                          {currentIndex + 1} / {flashcards.length}
+                        </span>
                       </div>
                     </div>
                   </div>
-                )}
+
+                  {/* Learned indicator */}
+                  {currentCard?.learned && (
+                    <div className="absolute top-4 left-4">
+                      <div className="gradient-outline rounded-full p-1">
+                        <div className="gradient-outline-content rounded-full p-2">
+                          <Check className="w-4 h-4 text-gaming-success" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
