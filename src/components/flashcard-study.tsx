@@ -3,20 +3,7 @@ import { GradientCard } from './ui/gradient-card';
 import { GradientButton } from './ui/gradient-button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from './ui/use-toast';
-import { 
-  Brain, 
-  Sparkles, 
-  ChevronLeft, 
-  ChevronRight, 
-  RefreshCw,
-  Star,
-  RotateCcw,
-  Loader2,
-  BookOpen,
-  Target,
-  Check,
-  X
-} from 'lucide-react';
+import { Brain, Sparkles, ChevronLeft, ChevronRight, RefreshCw, Star, RotateCcw, Loader as Loader2, BookOpen, Target, Check, X } from 'lucide-react';
 
 interface Flashcard {
   id: string;
