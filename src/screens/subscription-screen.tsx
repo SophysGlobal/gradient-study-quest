@@ -186,13 +186,13 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
       
       <div className="relative z-10 flex-1 max-w-md mx-auto w-full">
         {/* Header */}
-        <div className="text-center mb-8 animate-fade-in">
+        <div className="text-center mb-8 stagger-item">
           <h1 className="text-3xl font-bold gradient-text mb-2">Choose Your Plan</h1>
           <p className="text-text-secondary">Unlock your full learning potential</p>
         </div>
 
         {/* Billing Toggle */}
-        <div className="flex items-center justify-center mb-8">
+        <div className="flex items-center justify-center mb-8 stagger-item">
           <div className="gradient-outline rounded-full p-1">
             <div className="gradient-outline-content rounded-full flex">
               <button
@@ -223,7 +223,7 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
         </div>
 
         {/* Plans */}
-        <div className="space-y-4 mb-8">
+        <div className="space-y-4 mb-8 stagger-item">
           {plans.map((plan) => {
             const Icon = plan.icon;
             const isSelected = selectedPlan === plan.id;
@@ -300,7 +300,7 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
 
         {/* Continue Button */}
         {selectedPlan && selectedPlan !== 'enterprise' && (
-          <div className="animate-scale-in">
+          <div className="stagger-item">
             <GradientButton
               size="lg"
               className="w-full"

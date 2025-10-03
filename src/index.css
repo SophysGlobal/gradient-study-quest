@@ -258,7 +258,7 @@
 @keyframes page-enter {
   0% {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(4px);
   }
   100% {
     opacity: 1;
@@ -266,21 +266,26 @@
   }
 }
 
-.page-transition > * {
+.page-content {
   animation: none;
 }
 
-.page-content {
-  animation: page-enter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.page-content > * {
+  animation: none;
 }
 
-/* Prevent navigation bar from animating with page content */
+/* Prevent navigation bar and background from animating */
 .nav-fixed {
   position: fixed !important;
   z-index: 50 !important;
   animation: none !important;
   transform: none !important;
   opacity: 1 !important;
+}
+
+/* Prevent ParticleBackground from animating */
+.fixed.inset-0 {
+  animation: none !important;
 }
 
 /* Staggered animations for content rows */
