@@ -3,20 +3,7 @@ import { GradientCard } from './ui/gradient-card';
 import { GradientButton } from './ui/gradient-button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from './ui/use-toast';
-import { 
-  Brain, 
-  Sparkles, 
-  ChevronLeft, 
-  ChevronRight, 
-  RefreshCw,
-  Star,
-  RotateCcw,
-  Loader2,
-  BookOpen,
-  Target,
-  Check,
-  X
-} from 'lucide-react';
+import { Brain, Sparkles, ChevronLeft, ChevronRight, RefreshCw, Star, RotateCcw, Loader as Loader2, BookOpen, Target, Check, X } from 'lucide-react';
 
 interface Flashcard {
   id: string;
@@ -284,16 +271,16 @@ export const FlashcardStudy: React.FC<FlashcardStudyProps> = ({
 
       {/* Main Flashcard */}
       <div className="flex justify-center">
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-2xl flashcard-container">
           <div className="gradient-outline rounded-2xl p-1">
-            <div 
-              className="gradient-outline-content rounded-2xl bg-surface cursor-pointer hover:scale-[1.02] transition-all duration-300 shadow-lg"
+            <div
+              className="gradient-outline-content rounded-2xl bg-surface cursor-pointer shadow-lg"
               onClick={flipCard}
               style={{ minHeight: '320px' }}
             >
-              <div className="relative h-full p-8">
-                {!isFlipped ? (
-                  /* Front of card */
+              <div className={`flashcard-inner ${isFlipped ? 'flipped' : ''}`}>
+                {/* Front of card */}
+                <div className="flashcard-face flashcard-front relative h-full p-8" style={{ minHeight: '320px' }}>
                   <div className="h-full flex flex-col justify-center items-center text-center space-y-4">
                     <div className="gradient-outline rounded-full p-1 w-16 h-16">
                       <div className="gradient-outline-content rounded-full w-full h-full bg-surface flex items-center justify-center">
@@ -315,8 +302,32 @@ export const FlashcardStudy: React.FC<FlashcardStudyProps> = ({
                       </div>
                     </div>
                   </div>
-                ) : (
-                  /* Back of card */
+
+                  {/* Card counter in top right */}
+                  <div className="absolute top-4 right-4">
+                    <div className="gradient-outline rounded-full p-1">
+                      <div className="gradient-outline-content rounded-full px-3 py-1">
+                        <span className="text-sm font-medium text-gradient-purple">
+                          {currentIndex + 1} / {flashcards.length}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Studied indicator */}
+                  {studiedCards.has(currentCard.id) && (
+                    <div className="absolute top-4 left-4">
+                      <div className="gradient-outline rounded-full p-1">
+                        <div className="gradient-outline-content rounded-full p-2">
+                          <Check className="w-4 h-4 text-gaming-success" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Back of card */}
+                <div className="flashcard-face flashcard-back relative h-full p-8" style={{ minHeight: '320px' }}>
                   <div className="h-full flex flex-col justify-center items-center text-center space-y-6">
                     <div className="gradient-outline rounded-full p-1 w-16 h-16">
                       <div className="gradient-outline-content rounded-full w-full h-full bg-surface flex items-center justify-center">
@@ -360,29 +371,29 @@ export const FlashcardStudy: React.FC<FlashcardStudyProps> = ({
                       </div>
                     </div>
                   </div>
-                )}
-                
-                {/* Card counter in top right */}
-                <div className="absolute top-4 right-4">
-                  <div className="gradient-outline rounded-full p-1">
-                    <div className="gradient-outline-content rounded-full px-3 py-1">
-                      <span className="text-sm font-medium text-gradient-purple">
-                        {currentIndex + 1} / {flashcards.length}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Studied indicator */}
-                {studiedCards.has(currentCard.id) && (
-                  <div className="absolute top-4 left-4">
+
+                  {/* Card counter in top right */}
+                  <div className="absolute top-4 right-4">
                     <div className="gradient-outline rounded-full p-1">
-                      <div className="gradient-outline-content rounded-full p-2">
-                        <Check className="w-4 h-4 text-gaming-success" />
+                      <div className="gradient-outline-content rounded-full px-3 py-1">
+                        <span className="text-sm font-medium text-gradient-purple">
+                          {currentIndex + 1} / {flashcards.length}
+                        </span>
                       </div>
                     </div>
                   </div>
-                )}
+
+                  {/* Studied indicator */}
+                  {studiedCards.has(currentCard.id) && (
+                    <div className="absolute top-4 left-4">
+                      <div className="gradient-outline rounded-full p-1">
+                        <div className="gradient-outline-content rounded-full p-2">
+                          <Check className="w-4 h-4 text-gaming-success" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>

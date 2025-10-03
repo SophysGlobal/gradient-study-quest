@@ -175,6 +175,14 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ selectedSubjects, subs
               AI Generated
             </GradientButton>
           </div>
+          <GradientButton
+            onClick={() => setShowMasteryView(true)}
+            className="w-full mt-3"
+            variant="secondary"
+          >
+            <BarChart3 className="w-4 h-4 mr-2" />
+            View Mastery Progress
+          </GradientButton>
         </div>
       </GradientCard>
 
