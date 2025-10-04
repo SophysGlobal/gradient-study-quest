@@ -195,6 +195,36 @@ export const QuickQuiz: React.FC<QuickQuizProps> = ({ subject, onClose }) => {
     );
   }
 
+  // Add safety check for questions
+  if (!questions || questions.length === 0) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Zap className="w-5 h-5 text-gradient-orange" />
+            <h2 className="text-xl font-bold text-text-primary">Quick Quiz</h2>
+          </div>
+          <GradientButton onClick={onClose} variant="secondary" size="sm">
+            Close
+          </GradientButton>
+        </div>
+        
+        <GradientCard>
+          <div className="text-center py-8 space-y-4">
+            <XCircle className="w-12 h-12 text-gaming-error mx-auto" />
+            <div>
+              <p className="text-text-primary font-medium">Unable to generate quiz</p>
+              <p className="text-text-secondary text-sm mt-2">AI service is temporarily unavailable. Please try again in a moment.</p>
+            </div>
+            <GradientButton onClick={onClose} className="w-full">
+              Close
+            </GradientButton>
+          </div>
+        </GradientCard>
+      </div>
+    );
+  }
+
   if (gameEnded || timeLeft <= 0) {
     const percentage = Math.round((score / questions.length) * 100);
     return (
