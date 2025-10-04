@@ -318,21 +318,29 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
               <button
                 onClick={sendMessage}
                 disabled={isLoading || !inputMessage.trim()}
-                className={`h-[40px] px-3 rounded-lg transition-all duration-300 flex items-center justify-center ${
+                className={`h-[40px] rounded-lg transition-all duration-300 flex items-center justify-center relative overflow-hidden ${
                   !inputMessage.trim()
-                    ? 'border-2 border-surface-muted bg-surface-muted text-text-muted cursor-not-allowed'
-                    : 'gradient-outline hover:scale-105 active:scale-95'
+                    ? 'cursor-not-allowed'
+                    : 'hover:scale-105 active:scale-95'
                 }`}
               >
-                {!inputMessage.trim() ? (
-                  <div className="p-2">
-                    <Send className="w-4 h-4" />
+                <div className={`absolute inset-0 rounded-lg transition-all duration-300 ${
+                  !inputMessage.trim()
+                    ? 'border-2 border-surface-muted'
+                    : 'border-2 border-transparent bg-gradient-to-r from-purple-500 to-orange-500 p-[2px]'
+                }`}>
+                  <div className={`w-full h-full rounded-lg flex items-center justify-center px-3 ${
+                    !inputMessage.trim()
+                      ? 'bg-surface-muted'
+                      : 'bg-surface'
+                  }`}>
+                    {isLoading ? (
+                      <Loader2 className="w-4 h-4 animate-spin text-gradient-purple" />
+                    ) : (
+                      <Send className={`w-4 h-4 ${!inputMessage.trim() ? 'text-text-muted' : 'text-gradient-purple'}`} />
+                    )}
                   </div>
-                ) : (
-                  <div className="gradient-outline-content rounded-lg p-2">
-                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin text-gradient-purple" /> : <Send className="w-4 h-4 text-gradient-purple" />}
-                  </div>
-                )}
+                </div>
               </button>
             </div>
           </div>
