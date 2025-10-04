@@ -149,9 +149,29 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
     <div className="min-h-screen bg-background relative pb-16">
       <ParticleBackground />
 
-      <div className="relative z-10 flex flex-col h-screen page-content">
+      <div className="relative z-10 flex flex-col h-screen">
+        <style>{`
+          @keyframes staggerFadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          .ai-tutor-item {
+            animation: staggerFadeIn 0.4s ease-out forwards;
+            opacity: 0;
+          }
+          .ai-tutor-item:nth-child(1) { animation-delay: 0.05s; }
+          .ai-tutor-item:nth-child(2) { animation-delay: 0.1s; }
+          .ai-tutor-item:nth-child(3) { animation-delay: 0.15s; }
+          .ai-tutor-item:nth-child(4) { animation-delay: 0.2s; }
+        `}</style>
         {/* Header */}
-        <div className="flex-shrink-0 p-4 border-b border-card-border bg-surface/80 backdrop-blur-sm">
+        <div className="flex-shrink-0 p-4 border-b border-card-border bg-surface/80 backdrop-blur-sm ai-tutor-item">
           <div className="flex items-center gap-3 mb-4">
             <div className="gradient-outline rounded-full p-1">
               <div className="gradient-outline-content rounded-full p-2">
