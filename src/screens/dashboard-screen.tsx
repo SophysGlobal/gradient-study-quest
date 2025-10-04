@@ -22,6 +22,7 @@ import { Star, Target, Trophy, Zap, Brain, Timer, Shuffle, Flame, Award, RotateC
 import { Gamepad2 } from 'lucide-react';
 import { NotificationSettingsModal } from '@/components/notification-settings-modal';
 import { PrivacySettingsModal } from '@/components/privacy-settings-modal';
+import { AchievementsModal } from '@/components/achievements-modal';
 import { useToast } from '@/hooks/use-toast';
 
 interface DashboardScreenProps {
@@ -112,6 +113,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const [showAppSettings, setShowAppSettings] = useState(false);
   const [showNotificationSettings, setShowNotificationSettings] = useState(false);
   const [showPrivacySettings, setShowPrivacySettings] = useState(false);
+  const [showAchievements, setShowAchievements] = useState(false);
   const [subscriptionData, setSubscriptionData] = useState<any>(null);
   const [userTokens, setUserTokens] = useState(1250);
   const { toast } = useToast();
@@ -596,9 +598,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     return <div className="min-h-screen bg-background relative pb-20">
         <ParticleBackground />
         <div className="relative z-10 p-6 space-y-6">
-          <h1 className="text-2xl font-bold text-text-primary text-center stagger-item">Token Store</h1>
-          
-          <div className="text-center stagger-item">
+          <div className="text-center space-y-4 stagger-item">
+            <h1 className="text-2xl font-bold text-text-primary">Token Store</h1>
+            <p className="text-text-secondary">Spend your tokens on avatars, power-ups, and special items!</p>
+
             <div className="gradient-outline rounded-full p-1 inline-block mt-2">
               <div className="gradient-outline-content rounded-full px-4 py-1">
                 <span className="gradient-text font-semibold">🪙 {userTokens.toLocaleString()} Tokens</span>
@@ -1113,7 +1116,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         <GradientCard className="stagger-item">
           <div className="space-y-4">
             <h2 className="text-lg font-semibold gradient-text">Study Statistics</h2>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center">
                 <div className="gradient-outline rounded-lg p-1 mb-2">
@@ -1123,7 +1126,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </div>
                 </div>
               </div>
-              
+
               <div className="text-center">
                 <div className="gradient-outline rounded-lg p-1 mb-2">
                   <div className="gradient-outline-content rounded-lg p-3">
@@ -1132,7 +1135,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </div>
                 </div>
               </div>
-              
+
               <div className="text-center">
                 <div className="gradient-outline rounded-lg p-1 mb-2">
                   <div className="gradient-outline-content rounded-lg p-3">
@@ -1141,7 +1144,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   </div>
                 </div>
               </div>
-              
+
               <div className="text-center">
                 <div className="gradient-outline rounded-lg p-1 mb-2">
                   <div className="gradient-outline-content rounded-lg p-3">
@@ -1149,6 +1152,65 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                     <p className="text-xs text-text-muted">Achievements</p>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </GradientCard>
+
+        {/* Achievements */}
+        <GradientCard className="stagger-item">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold gradient-text flex items-center gap-2">
+                <Award className="w-5 h-5 text-gradient-orange" />
+                Achievements
+              </h2>
+              <button
+                onClick={() => setShowAchievements(true)}
+                className="text-sm text-gradient-purple font-medium hover:underline"
+              >
+                View All
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-muted">
+                <div className="gradient-outline rounded-full p-1">
+                  <div className="gradient-outline-content rounded-full p-2">
+                    <Flame className="w-5 h-5 text-gradient-orange" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-text-primary">7-Day Streak!</p>
+                  <p className="text-sm text-text-secondary">Keep up the momentum</p>
+                </div>
+                <span className="text-xs text-gaming-xp font-semibold">+50 XP</span>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-muted">
+                <div className="gradient-outline rounded-full p-1">
+                  <div className="gradient-outline-content rounded-full p-2">
+                    <Star className="w-5 h-5 text-gradient-purple" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-text-primary">Quiz Master</p>
+                  <p className="text-sm text-text-secondary">Scored 90%+ on 5 quizzes</p>
+                </div>
+                <span className="text-xs text-gaming-xp font-semibold">+100 XP</span>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-muted">
+                <div className="gradient-outline rounded-full p-1">
+                  <div className="gradient-outline-content rounded-full p-2">
+                    <Brain className="w-5 h-5 text-gradient-orange" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-text-primary">Study Champion</p>
+                  <p className="text-sm text-text-secondary">Studied 100+ flashcards</p>
+                </div>
+                <span className="text-xs text-gaming-xp font-semibold">+75 XP</span>
               </div>
             </div>
           </div>
@@ -1206,6 +1268,12 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       <PrivacySettingsModal
         isOpen={showPrivacySettings}
         onClose={() => setShowPrivacySettings(false)}
+      />
+
+      {/* Achievements Modal */}
+      <AchievementsModal
+        isOpen={showAchievements}
+        onClose={() => setShowAchievements(false)}
       />
     </div>;
 };
