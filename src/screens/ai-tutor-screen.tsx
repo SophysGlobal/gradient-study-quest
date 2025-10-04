@@ -113,7 +113,32 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        // Check for rate limit or payment errors
+        if (error.message?.includes('Rate limit') || error.message?.includes('429')) {
+          const errorMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            content: "Rate limit reached. Please wait a moment before trying again.",
+            isUser: false,
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, errorMessage]);
+          setIsLoading(false);
+          return;
+        }
+        if (error.message?.includes('Payment') || error.message?.includes('402')) {
+          const errorMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            content: "Usage limit reached. Please add credits to continue using AI features.",
+            isUser: false,
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, errorMessage]);
+          setIsLoading(false);
+          return;
+        }
+        throw error;
+      }
 
       if (data.success) {
         const aiMessage: Message = {

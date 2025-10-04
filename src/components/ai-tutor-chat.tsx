@@ -29,7 +29,28 @@ export const AITutorChat: React.FC<AITutorChatProps> = ({ subject }) => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        // Check for rate limit or payment errors
+        if (error.message?.includes('Rate limit') || error.message?.includes('429')) {
+          toast({
+            title: "Rate Limit Reached",
+            description: "Please wait a moment before trying again.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+        if (error.message?.includes('Payment') || error.message?.includes('402')) {
+          toast({
+            title: "Usage Limit Reached",
+            description: "Please add credits to continue using AI features.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+        throw error;
+      }
 
       if (data.success) {
         try {
@@ -67,7 +88,28 @@ export const AITutorChat: React.FC<AITutorChatProps> = ({ subject }) => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        // Check for rate limit or payment errors
+        if (error.message?.includes('Rate limit') || error.message?.includes('429')) {
+          toast({
+            title: "Rate Limit Reached",
+            description: "Please wait a moment before trying again.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+        if (error.message?.includes('Payment') || error.message?.includes('402')) {
+          toast({
+            title: "Usage Limit Reached",
+            description: "Please add credits to continue using AI features.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+        throw error;
+      }
 
       if (data.success) {
         setResponse(data.response);

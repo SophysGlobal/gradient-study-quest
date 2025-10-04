@@ -14,10 +14,10 @@ serve(async (req) => {
 
   try {
     const { prompt, type, subject } = await req.json();
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not found');
+    if (!lovableApiKey) {
+      throw new Error('Lovable API key not found');
     }
 
     let systemMessage = '';
@@ -30,14 +30,16 @@ serve(async (req) => {
       systemMessage = `You are creating a quiz question for ${subject}. Generate one multiple choice question with 4 options and indicate the correct answer. Return ONLY valid JSON with "question", "options" array, and "correctAnswer" index. No markdown formatting.`;
     }
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    console.log(`Generating ${type} for ${subject}`);
+
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemMessage },
           { role: 'user', content: prompt }
@@ -50,7 +52,30 @@ serve(async (req) => {
     const data = await response.json();
     
     if (!response.ok) {
-      console.error('OpenAI API error:', data);
+      console.error('Lovable AI Gateway error:', data);
+      
+      // Handle rate limit errors
+      if (response.status === 429) {
+        return new Response(JSON.stringify({ 
+          error: 'Rate limit reached. Please try again in a moment.',
+          success: false 
+        }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
+      // Handle payment required
+      if (response.status === 402) {
+        return new Response(JSON.stringify({ 
+          error: 'AI usage limit reached. Please add credits to continue.',
+          success: false 
+        }), {
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
       throw new Error(data.error?.message || 'Failed to get AI response');
     }
 

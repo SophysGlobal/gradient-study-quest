@@ -80,7 +80,28 @@ export const QuickQuiz: React.FC<QuickQuizProps> = ({ subject, onClose }) => {
             }
           });
 
-          if (error) throw error;
+      if (error) {
+        // Check for rate limit or payment errors
+        if (error.message?.includes('Rate limit') || error.message?.includes('429')) {
+          toast({
+            title: "Rate Limit Reached",
+            description: "Please wait a moment before trying again.",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
+        if (error.message?.includes('Payment') || error.message?.includes('402')) {
+          toast({
+            title: "Usage Limit Reached",
+            description: "Please add credits to continue using AI features.",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
+        throw error;
+      }
 
           if (data.success) {
             try {
