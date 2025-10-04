@@ -299,7 +299,7 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
                 value={inputMessage}
                 onChange={e => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder={`Ask me anything about ${focusSubjects.join(', ')}...`}
+                placeholder="Ask me anything about your subjects..."
                 disabled={isLoading}
                 className="flex-1 bg-surface border border-card-border rounded-lg px-3 py-2 text-text-primary text-sm resize-none focus:outline-none focus:ring-2 focus:ring-purple-500/50 min-h-[40px] max-h-[120px]"
                 rows={1}
@@ -315,14 +315,25 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
                   target.style.height = Math.min(target.scrollHeight, 120) + 'px';
                 }}
               />
-              <GradientButton
+              <button
                 onClick={sendMessage}
                 disabled={isLoading || !inputMessage.trim()}
-                size="sm"
-                className="h-[40px] px-3"
+                className={`h-[40px] px-3 rounded-lg transition-all duration-300 flex items-center justify-center ${
+                  !inputMessage.trim()
+                    ? 'border-2 border-surface-muted bg-surface-muted text-text-muted cursor-not-allowed'
+                    : 'gradient-outline hover:scale-105 active:scale-95'
+                }`}
               >
-                {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-              </GradientButton>
+                {!inputMessage.trim() ? (
+                  <div className="p-2">
+                    <Send className="w-4 h-4" />
+                  </div>
+                ) : (
+                  <div className="gradient-outline-content rounded-lg p-2">
+                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin text-gradient-purple" /> : <Send className="w-4 h-4 text-gradient-purple" />}
+                  </div>
+                )}
+              </button>
             </div>
           </div>
         
