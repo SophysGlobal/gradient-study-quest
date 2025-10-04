@@ -242,6 +242,7 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ selectedSubjects, subs
         <FlashcardMasteryView
           onClose={() => setShowMasteryView(false)}
           selectedSubject={selectedSubject}
+          availableSubjects={selectedSubjects}
         />
       )}
     </div>
