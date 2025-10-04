@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ParticleBackground } from '@/components/animations/particle-background';
 import { GradientCard } from '@/components/ui/gradient-card';
 import { GradientButton } from '@/components/ui/gradient-button';
@@ -100,8 +100,13 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
   const [showSubjectDropdown, setShowSubjectDropdown] = useState(false);
   const [activeGame, setActiveGame] = useState<string | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const gamesGridRef = useRef<HTMLDivElement>(null);
 
   const hasPersonalPlus = subscriptionTier === 'Premium' || subscriptionTier === 'Enterprise';
+
+  const scrollToGames = () => {
+    gamesGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   const filteredGames = selectedCategory === 'All' 
     ? minigames 
@@ -207,7 +212,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
         </div>
 
         {/* Games Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 stagger-item">
+        <div ref={gamesGridRef} className="grid grid-cols-1 md:grid-cols-2 gap-4 stagger-item">
           {filteredGames.map(game => {
             const Icon = game.icon;
             const isLocked = game.requiresPremium && !hasPersonalPlus;
@@ -280,7 +285,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
                     </div>
                   </div>
                 </div>
-                <GradientButton size="sm">
+                <GradientButton size="sm" onClick={scrollToGames}>
                   Start
                 </GradientButton>
               </div>
@@ -304,7 +309,7 @@ export const GamesScreen: React.FC<GamesScreenProps> = ({
                     </div>
                   </div>
                 </div>
-                <GradientButton size="sm">
+                <GradientButton size="sm" onClick={scrollToGames}>
                   Start
                 </GradientButton>
               </div>
