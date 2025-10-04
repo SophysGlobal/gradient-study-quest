@@ -6,6 +6,7 @@ import { LearnModeLauncher } from '@/components/learn-mode-launcher';
 import { FlashcardStudy } from '@/components/flashcard-study';
 import { PremadeFlashcardStudy } from '@/components/premade-flashcard-study';
 import { MiniGameUpgradeModal } from '@/components/mini-game-upgrade-modal';
+import { FlashcardMasteryView } from '@/components/flashcard-mastery-view';
 
 type StudyMode = 'learn' | 'test' | 'match' | 'spaced-repetition' | 'write' | 'practice';
 
@@ -21,6 +22,7 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ selectedSubjects, subs
   const [activeFlashcards, setActiveFlashcards] = useState(false);
   const [activePremadeFlashcards, setActivePremadeFlashcards] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showMasteryView, setShowMasteryView] = useState(false);
 
   const hasPersonalPlus = subscriptionTier === 'Premium' || subscriptionTier === 'Enterprise';
 
@@ -230,10 +232,19 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ selectedSubjects, subs
       </div>
       
       {/* Mini Game Upgrade Modal */}
-      <MiniGameUpgradeModal 
-        isOpen={showUpgradeModal} 
-        onClose={() => setShowUpgradeModal(false)} 
+      <MiniGameUpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
       />
+
+      {/* Mastery View */}
+      {showMasteryView && (
+        <FlashcardMasteryView
+          onClose={() => setShowMasteryView(false)}
+          selectedSubject={selectedSubject}
+          availableSubjects={selectedSubjects}
+        />
+      )}
     </div>
   );
 };

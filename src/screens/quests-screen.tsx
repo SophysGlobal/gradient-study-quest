@@ -17,6 +17,7 @@ interface Quest {
   completed: boolean;
   icon: any;
   difficulty: 'Easy' | 'Medium' | 'Hard';
+  targetScreen: 'flashcards' | 'games' | 'ai-tutor';
 }
 
 interface QuestsScreenProps {
@@ -37,7 +38,8 @@ const quests: Quest[] = [
     reward: { type: 'xp', amount: 50 },
     completed: false,
     icon: BookOpen,
-    difficulty: 'Easy'
+    difficulty: 'Easy',
+    targetScreen: 'flashcards'
   },
   {
     id: 'weekly-streak',
@@ -49,7 +51,8 @@ const quests: Quest[] = [
     reward: { type: 'tokens', amount: 200 },
     completed: true,
     icon: Flame,
-    difficulty: 'Medium'
+    difficulty: 'Medium',
+    targetScreen: 'flashcards'
   },
   {
     id: 'quiz-master',
@@ -61,7 +64,8 @@ const quests: Quest[] = [
     reward: { type: 'badge', amount: 'Quiz Master' },
     completed: false,
     icon: Trophy,
-    difficulty: 'Hard'
+    difficulty: 'Hard',
+    targetScreen: 'games'
   },
   {
     id: 'time-trial-pro',
@@ -73,7 +77,8 @@ const quests: Quest[] = [
     reward: { type: 'xp', amount: 75 },
     completed: false,
     icon: Zap,
-    difficulty: 'Medium'
+    difficulty: 'Medium',
+    targetScreen: 'games'
   },
   {
     id: 'subject-explorer',
@@ -85,7 +90,8 @@ const quests: Quest[] = [
     reward: { type: 'tokens', amount: 150 },
     completed: false,
     icon: Target,
-    difficulty: 'Easy'
+    difficulty: 'Easy',
+    targetScreen: 'flashcards'
   },
   {
     id: 'memory-champion',
@@ -97,7 +103,8 @@ const quests: Quest[] = [
     reward: { type: 'badge', amount: 'Memory Master' },
     completed: false,
     icon: Crown,
-    difficulty: 'Hard'
+    difficulty: 'Hard',
+    targetScreen: 'games'
   }
 ];
 
@@ -136,15 +143,9 @@ export const QuestsScreen: React.FC<QuestsScreenProps> = ({
 
   const handleQuestClick = (quest: Quest) => {
     if (quest.completed) return;
-    
-    // Route to appropriate activity based on quest type
-    if (quest.id.includes('flashcard') || quest.id.includes('subject-explorer')) {
-      onTabChange('flashcards');
-    } else if (quest.id.includes('quiz') || quest.id.includes('time-trial') || quest.id.includes('memory') || quest.id.includes('game')) {
-      onTabChange('games'); // All minigame quests go to games section
-    } else {
-      onTabChange('ai-tutor'); // Default to AI tutor for study activities
-    }
+
+    // Route to the quest's target screen
+    onTabChange(quest.targetScreen);
   };
 
   // Removed game component rendering - quests don't launch games directly
