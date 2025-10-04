@@ -171,36 +171,28 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
           .ai-tutor-item:nth-child(4) { animation-delay: 0.2s; }
         `}</style>
         {/* Header */}
-        <div className="flex-shrink-0 p-4 border-b border-card-border bg-surface/80 backdrop-blur-sm ai-tutor-item">
-          <div className="flex items-center gap-3 mb-4">
+        <div className="flex-shrink-0 p-3 border-b border-card-border bg-surface/70 backdrop-blur-md ai-tutor-item sticky top-0 z-50">
+          <div className="flex items-center gap-2 mb-2">
             <div className="gradient-outline rounded-full p-1">
-              <div className="gradient-outline-content rounded-full p-2">
-                <Bot className="w-6 h-6 text-gradient-purple" />
+              <div className="gradient-outline-content rounded-full p-1.5">
+                <Bot className="w-5 h-5 text-gradient-purple" />
               </div>
             </div>
-            <div className="flex-1">
-              <h1 className="text-lg font-bold text-text-primary">AI Tutor</h1>
-              <p className="text-xs text-text-secondary">Focus Subjects: {focusSubjects.join(', ')}</p>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-base font-bold text-text-primary">AI Tutor</h1>
+              <p className="text-xs text-text-secondary truncate">Focus: {focusSubjects.join(', ')}</p>
             </div>
             {!hasUnlimitedPrompts && (
-              <div className="text-right space-y-1">
-                <button 
+              <div className="text-right flex-shrink-0">
+                <button
                   onClick={() => setShowUpgradeModal(true)}
                   className="gradient-outline rounded-lg p-1 hover:scale-105 transition-transform cursor-pointer"
                 >
-                  <div className="gradient-outline-content px-3 py-2 bg-surface/50 rounded-lg">
-                    <div className="flex flex-col items-end space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-medium text-gradient-purple">Daily</span>
-                        <div className="bg-surface rounded-full px-2 py-0.5">
-                          <span className="text-xs font-bold text-text-primary">{usage.dailyUsed}/{usage.dailyLimit}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-medium text-gradient-orange">Monthly</span>
-                        <div className="bg-surface rounded-full px-2 py-0.5">
-                          <span className="text-xs font-bold text-text-primary">{usage.monthlyUsed}/{usage.monthlyLimit}</span>
-                        </div>
+                  <div className="gradient-outline-content px-2 py-1 bg-surface/50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <div className="text-right">
+                        <div className="text-xs font-medium text-gradient-purple">{usage.dailyUsed}/{usage.dailyLimit}</div>
+                        <div className="text-xs font-medium text-gradient-orange">{usage.monthlyUsed}/{usage.monthlyLimit}</div>
                       </div>
                     </div>
                   </div>
@@ -208,39 +200,36 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
               </div>
             )}
           </div>
-          
+
           {/* Subject Selection */}
-          <div className="space-y-1">
-            <p className="text-xs font-medium text-text-primary">Select subjects to focus on:</p>
-            <div className="flex flex-wrap gap-2">
-              <button 
-                onClick={() => setFocusSubjects(selectedSubjects)} 
-                className={`px-2 py-1 rounded-full text-xs transition-all ${
-                  focusSubjects.length === selectedSubjects.length 
-                    ? 'bg-gradient-to-r from-purple-500 to-orange-500 text-white' 
+          <div>
+            <div className="flex flex-wrap gap-1.5">
+              <button
+                onClick={() => setFocusSubjects(selectedSubjects)}
+                className={`px-2 py-0.5 rounded-full text-xs transition-all ${
+                  focusSubjects.length === selectedSubjects.length
+                    ? 'bg-gradient-to-r from-purple-500 to-orange-500 text-white'
                     : 'bg-surface-muted text-text-secondary hover:bg-surface-hover'
                 }`}
               >
-                <Check className="w-3 h-3 inline mr-1" />
                 ALL
               </button>
               {selectedSubjects.map(subject => (
-                <button 
-                  key={subject} 
+                <button
+                  key={subject}
                   onClick={() => {
                     if (focusSubjects.includes(subject)) {
                       setFocusSubjects(focusSubjects.filter(s => s !== subject));
                     } else {
                       setFocusSubjects([...focusSubjects, subject]);
                     }
-                  }} 
-                  className={`px-2 py-1 rounded-full text-xs transition-all ${
-                    focusSubjects.includes(subject) 
-                      ? 'bg-gradient-to-r from-purple-500 to-orange-500 text-white' 
+                  }}
+                  className={`px-2 py-0.5 rounded-full text-xs transition-all ${
+                    focusSubjects.includes(subject)
+                      ? 'bg-gradient-to-r from-purple-500 to-orange-500 text-white'
                       : 'bg-surface-muted text-text-secondary hover:bg-surface-hover'
                   }`}
                 >
-                  <Check className="w-3 h-3 inline mr-1" />
                   {subject}
                 </button>
               ))}
@@ -249,7 +238,7 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-40">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-32">
           {messages.map(message => (
             <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
               <div className={`flex items-start gap-3 max-w-[80%]`}>
@@ -303,25 +292,34 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
         </div>
 
         {/* Input */}
-        <div className="fixed bottom-16 left-0 right-0 p-2 border-t border-card-border bg-surface/95 backdrop-blur-sm z-40 rounded-t-lg">
+        <div className="fixed bottom-16 left-0 right-0 p-2 border-t border-card-border bg-surface/70 backdrop-blur-md z-40">
           <div className="flex justify-center w-full">
-            <div className="flex gap-4 max-w-4xl w-full px-4">
-              <GradientInput 
-                value={inputMessage} 
-                onChange={e => setInputMessage(e.target.value)} 
-                onKeyPress={handleKeyPress} 
-                placeholder={`Ask me anything about ${focusSubjects.join(', ')}...`} 
-                disabled={isLoading} 
-                className="flex-1" 
-                multiline={true}
-                rows={4}
-                cols={80}
+            <div className="flex gap-2 items-end max-w-4xl w-full px-4">
+              <textarea
+                value={inputMessage}
+                onChange={e => setInputMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder={`Ask me anything about ${focusSubjects.join(', ')}...`}
+                disabled={isLoading}
+                className="flex-1 bg-surface border border-card-border rounded-lg px-3 py-2 text-text-primary text-sm resize-none focus:outline-none focus:ring-2 focus:ring-purple-500/50 min-h-[40px] max-h-[120px]"
+                rows={1}
+                style={{
+                  height: 'auto',
+                  minHeight: '40px',
+                  maxHeight: '120px',
+                  overflowY: inputMessage.split('\n').length > 3 ? 'auto' : 'hidden'
+                }}
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement;
+                  target.style.height = 'auto';
+                  target.style.height = Math.min(target.scrollHeight, 120) + 'px';
+                }}
               />
-              <GradientButton 
-                onClick={sendMessage} 
-                disabled={isLoading || !inputMessage.trim()} 
-                size="sm" 
-                className="shrink-0"
+              <GradientButton
+                onClick={sendMessage}
+                disabled={isLoading || !inputMessage.trim()}
+                size="sm"
+                className="h-[40px] px-3"
               >
                 {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               </GradientButton>
@@ -329,27 +327,24 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
           </div>
         
           {/* Quick Actions */}
-          <div className="flex justify-center w-full mt-3">
-            <div className="flex gap-2 flex-wrap max-w-4xl px-4 justify-center mb-2">
-              <button 
-                onClick={() => setInputMessage('Explain the main concepts I should know for the upcoming test')} 
-                className="text-xs px-4 py-2 rounded-full bg-surface-muted text-text-secondary hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-orange-500/10 hover:text-gradient-purple transition-all whitespace-nowrap"
+          <div className="flex justify-center w-full mt-2">
+            <div className="flex gap-1.5 flex-wrap max-w-4xl px-4 justify-center mb-1">
+              <button
+                onClick={() => setInputMessage('Explain the main concepts I should know for the upcoming test')}
+                className="text-xs px-3 py-1 rounded-full bg-surface-muted text-text-secondary hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-orange-500/10 hover:text-gradient-purple transition-all whitespace-nowrap"
               >
-                <MessageCircle className="w-3 h-3 inline mr-1" />
-                Test prep help
+                Test prep
               </button>
-              <button 
-                onClick={() => setInputMessage('Give me practice problems to work on')} 
-                className="text-xs px-4 py-2 rounded-full bg-surface-muted text-text-secondary hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-orange-500/10 hover:text-gradient-purple transition-all whitespace-nowrap"
+              <button
+                onClick={() => setInputMessage('Give me practice problems to work on')}
+                className="text-xs px-3 py-1 rounded-full bg-surface-muted text-text-secondary hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-orange-500/10 hover:text-gradient-purple transition-all whitespace-nowrap"
               >
-                <Sparkles className="w-3 h-3 inline mr-1" />
-                Practice problems
+                Practice
               </button>
-              <button 
-                onClick={() => setInputMessage('What are the most important topics I should focus on?')} 
-                className="text-xs px-4 py-2 rounded-full bg-surface-muted text-text-secondary hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-orange-500/10 hover:text-gradient-purple transition-all whitespace-nowrap"
+              <button
+                onClick={() => setInputMessage('What are the most important topics I should focus on?')}
+                className="text-xs px-3 py-1 rounded-full bg-surface-muted text-text-secondary hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-orange-500/10 hover:text-gradient-purple transition-all whitespace-nowrap"
               >
-                <Brain className="w-3 h-3 inline mr-1" />
                 Study guide
               </button>
             </div>

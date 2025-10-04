@@ -22,6 +22,7 @@ import { Star, Target, Trophy, Zap, Brain, Timer, Shuffle, Flame, Award, RotateC
 import { Gamepad2 } from 'lucide-react';
 import { NotificationSettingsModal } from '@/components/notification-settings-modal';
 import { PrivacySettingsModal } from '@/components/privacy-settings-modal';
+import { AchievementsModal } from '@/components/achievements-modal';
 import { useToast } from '@/hooks/use-toast';
 
 interface DashboardScreenProps {
@@ -112,6 +113,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const [showAppSettings, setShowAppSettings] = useState(false);
   const [showNotificationSettings, setShowNotificationSettings] = useState(false);
   const [showPrivacySettings, setShowPrivacySettings] = useState(false);
+  const [showAchievements, setShowAchievements] = useState(false);
   const [subscriptionData, setSubscriptionData] = useState<any>(null);
   const [userTokens, setUserTokens] = useState(1250);
   const { toast } = useToast();
@@ -1158,10 +1160,18 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         {/* Achievements */}
         <GradientCard className="stagger-item">
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold gradient-text flex items-center gap-2">
-              <Award className="w-5 h-5 text-gradient-orange" />
-              Achievements
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold gradient-text flex items-center gap-2">
+                <Award className="w-5 h-5 text-gradient-orange" />
+                Achievements
+              </h2>
+              <button
+                onClick={() => setShowAchievements(true)}
+                className="text-sm text-gradient-purple font-medium hover:underline"
+              >
+                View All
+              </button>
+            </div>
 
             <div className="space-y-3">
               <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-muted">
@@ -1201,32 +1211,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                   <p className="text-sm text-text-secondary">Studied 100+ flashcards</p>
                 </div>
                 <span className="text-xs text-gaming-xp font-semibold">+75 XP</span>
-              </div>
-
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-muted">
-                <div className="gradient-outline rounded-full p-1">
-                  <div className="gradient-outline-content rounded-full p-2">
-                    <Target className="w-5 h-5 text-gradient-purple" />
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-text-primary">Perfect Score</p>
-                  <p className="text-sm text-text-secondary">100% accuracy on quiz</p>
-                </div>
-                <span className="text-xs text-gaming-xp font-semibold">+150 XP</span>
-              </div>
-
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-surface-muted">
-                <div className="gradient-outline rounded-full p-1">
-                  <div className="gradient-outline-content rounded-full p-2">
-                    <Trophy className="w-5 h-5 text-gradient-orange" />
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-text-primary">Quick Learner</p>
-                  <p className="text-sm text-text-secondary">Completed 10 lessons in one day</p>
-                </div>
-                <span className="text-xs text-gaming-xp font-semibold">+80 XP</span>
               </div>
             </div>
           </div>
@@ -1284,6 +1268,12 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
       <PrivacySettingsModal
         isOpen={showPrivacySettings}
         onClose={() => setShowPrivacySettings(false)}
+      />
+
+      {/* Achievements Modal */}
+      <AchievementsModal
+        isOpen={showAchievements}
+        onClose={() => setShowAchievements(false)}
       />
     </div>;
 };
