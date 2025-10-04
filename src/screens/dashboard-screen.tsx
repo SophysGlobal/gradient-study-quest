@@ -23,6 +23,8 @@ import { Gamepad2 } from 'lucide-react';
 import { NotificationSettingsModal } from '@/components/notification-settings-modal';
 import { PrivacySettingsModal } from '@/components/privacy-settings-modal';
 import { AchievementsModal } from '@/components/achievements-modal';
+import { StudyStatisticsModal } from '@/components/study-statistics-modal';
+import { PlaceholderProgressGraph } from '@/components/placeholder-progress-graph';
 import { useToast } from '@/hooks/use-toast';
 
 interface DashboardScreenProps {
@@ -114,8 +116,12 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   const [showNotificationSettings, setShowNotificationSettings] = useState(false);
   const [showPrivacySettings, setShowPrivacySettings] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
+  const [showStatisticsModal, setShowStatisticsModal] = useState(false);
+  const [selectedStatType, setSelectedStatType] = useState<'cards' | 'accuracy' | 'quests' | 'achievements'>('cards');
   const [subscriptionData, setSubscriptionData] = useState<any>(null);
   const [userTokens, setUserTokens] = useState(1250);
+  const [userXP, setUserXP] = useState(0); // Track user XP
+  const [hasProgressData, setHasProgressData] = useState(false); // Track if user has any activity
   const { toast } = useToast();
   const { theme, toggleTheme } = useTheme();
 
@@ -123,6 +129,22 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(timer);
   }, []);
+
+  // Check if user has earned any XP (set hasProgressData to true if XP > 0)
+  useEffect(() => {
+    if (userXP > 0) {
+      setHasProgressData(true);
+    }
+  }, [userXP]);
+
+  // Function to award XP
+  const awardXP = (amount: number, activity: string) => {
+    setUserXP(prev => prev + amount);
+    toast({
+      title: "XP Earned!",
+      description: `+${amount} XP from ${activity}`,
+    });
+  };
 
   // Fetch subscription data
   useEffect(() => {
@@ -257,33 +279,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             
             {/* Weekly Progress Chart */}
             <GradientCard className="stagger-item">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-text-primary">This Week</h3>
-                  <span className="text-sm text-gradient-purple font-medium">7 days active</span>
-                </div>
-                
-                <div className="flex items-end justify-between gap-2 h-24">
-                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => {
-                    const height = [60, 80, 45, 90, 75, 100, 85][index];
-                    return (
-                      <div key={day} className="flex flex-col items-center gap-2 flex-1">
-                        <div 
-                          className="w-full bg-gradient-to-t from-purple-500 to-orange-500 rounded-t-lg transition-all duration-500"
-                          style={{ height: `${height}%` }}
-                        />
-                        <span className="text-xs text-text-muted">{day}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-                
-                <div className="text-center">
-                  <p className="text-sm text-text-secondary">
-                    <span className="text-gaming-xp font-semibold">+420 XP</span> earned this week
-                  </p>
-                </div>
-              </div>
+              <PlaceholderProgressGraph hasData={hasProgressData} />
             </GradientCard>
             
             {/* Subject Progress */}
@@ -330,9 +326,15 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             
             {/* Study Statistics */}
             <div className="grid grid-cols-2 gap-4 stagger-item">
-              <GradientCard>
+              <GradientCard 
+                className="cursor-pointer transition-all duration-300 hover:scale-105 hover:-translate-y-1 active:scale-95"
+                onClick={() => {
+                  setSelectedStatType('cards');
+                  setShowStatisticsModal(true);
+                }}
+              >
                 <div className="text-center space-y-3 p-4">
-                  <div className="gradient-outline rounded-full p-1 w-16 h-16 mx-auto">
+                  <div className="gradient-outline rounded-full p-1 w-16 h-16 mx-auto transition-transform duration-300 hover:rotate-12">
                     <div className="gradient-outline-content rounded-full w-full h-full bg-surface flex items-center justify-center">
                       <BookOpen className="w-8 h-8 text-gradient-purple" />
                     </div>
@@ -344,9 +346,15 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 </div>
               </GradientCard>
               
-              <GradientCard>
+              <GradientCard 
+                className="cursor-pointer transition-all duration-300 hover:scale-105 hover:-translate-y-1 active:scale-95"
+                onClick={() => {
+                  setSelectedStatType('accuracy');
+                  setShowStatisticsModal(true);
+                }}
+              >
                 <div className="text-center space-y-3 p-4">
-                  <div className="gradient-outline rounded-full p-1 w-16 h-16 mx-auto">
+                  <div className="gradient-outline rounded-full p-1 w-16 h-16 mx-auto transition-transform duration-300 hover:rotate-12">
                     <div className="gradient-outline-content rounded-full w-full h-full bg-surface flex items-center justify-center">
                       <Target className="w-8 h-8 text-gradient-orange" />
                     </div>
@@ -495,6 +503,23 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           <MiniGameUpgradeModal 
             isOpen={showMiniGameUpgrade} 
             onClose={() => setShowMiniGameUpgrade(false)} 
+          />
+
+          {/* Statistics Modal */}
+          <StudyStatisticsModal
+            isOpen={showStatisticsModal}
+            onClose={() => setShowStatisticsModal(false)}
+            statType={selectedStatType}
+            onContinueStudying={() => {
+              setShowStatisticsModal(false);
+              if (selectedStatType === 'cards' || selectedStatType === 'accuracy') {
+                setActiveTab('learn');
+              } else if (selectedStatType === 'quests') {
+                setActiveTab('quests');
+              } else {
+                setActiveTab('learn');
+              }
+            }}
           />
         </div>
 
@@ -1118,7 +1143,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             <h2 className="text-lg font-semibold gradient-text">Study Statistics</h2>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="text-center">
+              <div 
+                className="text-center cursor-pointer transition-all duration-300 hover:scale-105 hover:-translate-y-1 active:scale-95"
+                onClick={() => {
+                  setSelectedStatType('cards');
+                  setShowStatisticsModal(true);
+                }}
+              >
                 <div className="gradient-outline rounded-lg p-1 mb-2">
                   <div className="gradient-outline-content rounded-lg p-3">
                     <p className="text-2xl font-bold text-gradient-purple">142</p>
@@ -1127,7 +1158,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 </div>
               </div>
 
-              <div className="text-center">
+              <div 
+                className="text-center cursor-pointer transition-all duration-300 hover:scale-105 hover:-translate-y-1 active:scale-95"
+                onClick={() => {
+                  setSelectedStatType('accuracy');
+                  setShowStatisticsModal(true);
+                }}
+              >
                 <div className="gradient-outline rounded-lg p-1 mb-2">
                   <div className="gradient-outline-content rounded-lg p-3">
                     <p className="text-2xl font-bold text-gradient-orange">89%</p>
@@ -1136,7 +1173,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 </div>
               </div>
 
-              <div className="text-center">
+              <div 
+                className="text-center cursor-pointer transition-all duration-300 hover:scale-105 hover:-translate-y-1 active:scale-95"
+                onClick={() => {
+                  setSelectedStatType('quests');
+                  setShowStatisticsModal(true);
+                }}
+              >
                 <div className="gradient-outline rounded-lg p-1 mb-2">
                   <div className="gradient-outline-content rounded-lg p-3">
                     <p className="text-2xl font-bold text-gaming-success">24</p>
@@ -1145,7 +1188,13 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
                 </div>
               </div>
 
-              <div className="text-center">
+              <div 
+                className="text-center cursor-pointer transition-all duration-300 hover:scale-105 hover:-translate-y-1 active:scale-95"
+                onClick={() => {
+                  setSelectedStatType('achievements');
+                  setShowStatisticsModal(true);
+                }}
+              >
                 <div className="gradient-outline rounded-lg p-1 mb-2">
                   <div className="gradient-outline-content rounded-lg p-3">
                     <p className="text-2xl font-bold text-gaming-xp">15</p>
