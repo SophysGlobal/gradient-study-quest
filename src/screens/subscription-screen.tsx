@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { GradientButton } from '@/components/ui/gradient-button';
 import { GradientCard } from '@/components/ui/gradient-card';
 import { ParticleBackground } from '@/components/animations/particle-background';
-import { Check, Zap, Crown, Building, Loader2 } from 'lucide-react';
+import { Check, Zap, Crown, Building, Loader as Loader2 } from 'lucide-react';
 import { STRIPE_PRODUCTS, getProductsByMode } from '@/stripe-config';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
