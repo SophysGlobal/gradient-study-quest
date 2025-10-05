@@ -8,7 +8,9 @@ import { MiniGameUpgradeModal } from '@/components/mini-game-upgrade-modal';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { usePromptLimits } from '@/hooks/use-prompt-limits';
-import { Bot, Send, User, Loader as Loader2, Brain, Sparkles, MessageCircle, Check } from 'lucide-react';
+import { Bot, Send, User, Loader as Loader2, Brain, Sparkles, MessageCircle, Check, Calendar, BookOpen } from 'lucide-react';
+import { AIStudyPlanner } from '@/components/ai-study-planner';
+import { AIPracticeGenerator } from '@/components/ai-practice-generator';
 
 interface Message {
   id: string;
@@ -24,7 +26,6 @@ interface AITutorScreenProps {
   selectedSubjects: string[];
   activeTab: string;
   onTabChange: (tab: string) => void;
-  subscriptionTier?: string;
   onUpgrade?: () => void;
 }
 
@@ -33,7 +34,6 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
   selectedSubjects,
   activeTab,
   onTabChange,
-  subscriptionTier,
   onUpgrade
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -42,10 +42,11 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
   const [focusSubjects, setFocusSubjects] = useState<string[]>(selectedSubjects);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [limitType, setLimitType] = useState<'daily' | 'monthly'>('daily');
+  const [activeFeature, setActiveFeature] = useState<'chat' | 'planner' | 'practice'>('chat');
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { usage, incrementUsage, hasUnlimitedPrompts } = usePromptLimits(subscriptionTier);
+  const { usage, incrementUsage, hasUnlimitedPrompts } = usePromptLimits();
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -260,10 +261,50 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
               ))}
             </div>
           </div>
+
+          {/* Feature Tabs */}
+          <div className="flex gap-2 px-3 pb-2">
+            <button
+              onClick={() => setActiveFeature('chat')}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs transition-all ${
+                activeFeature === 'chat'
+                  ? 'bg-gradient-to-r from-purple-500 to-orange-500 text-white'
+                  : 'bg-surface-muted text-text-secondary hover:bg-surface-hover'
+              }`}
+            >
+              <MessageCircle className="w-3 h-3" />
+              Chat
+            </button>
+            <button
+              onClick={() => setActiveFeature('planner')}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs transition-all ${
+                activeFeature === 'planner'
+                  ? 'bg-gradient-to-r from-purple-500 to-orange-500 text-white'
+                  : 'bg-surface-muted text-text-secondary hover:bg-surface-hover'
+              }`}
+            >
+              <Calendar className="w-3 h-3" />
+              Study Plan
+            </button>
+            <button
+              onClick={() => setActiveFeature('practice')}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs transition-all ${
+                activeFeature === 'practice'
+                  ? 'bg-gradient-to-r from-purple-500 to-orange-500 text-white'
+                  : 'bg-surface-muted text-text-secondary hover:bg-surface-hover'
+              }`}
+            >
+              <BookOpen className="w-3 h-3" />
+              Practice
+            </button>
+          </div>
         </div>
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-32">
+        {/* Content Area */}
+        {activeFeature === 'chat' && (
+          <>
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-32">
           {messages.map(message => (
             <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
               <div className={`flex items-start gap-3 max-w-[80%]`}>
@@ -314,10 +355,10 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
           )}
           
           <div ref={messagesEndRef} />
-        </div>
+            </div>
 
-        {/* Input */}
-        <div className="fixed bottom-16 left-0 right-0 p-2 border-t border-card-border bg-surface/70 backdrop-blur-md z-40">
+            {/* Input */}
+            <div className="fixed bottom-16 left-0 right-0 p-2 border-t border-card-border bg-surface/70 backdrop-blur-md z-40">
           <div className="flex justify-center w-full">
             <div className="flex gap-2 items-end max-w-4xl w-full px-4">
               <textarea
@@ -393,9 +434,23 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
               </button>
             </div>
           </div>
-        </div>
+            </div>
+          </>
+        )}
+
+        {activeFeature === 'planner' && (
+          <div className="flex-1 overflow-y-auto p-4 pb-32">
+            <AIStudyPlanner subject={focusSubjects.join(', ')} />
+          </div>
+        )}
+
+        {activeFeature === 'practice' && (
+          <div className="flex-1 overflow-y-auto p-4 pb-32">
+            <AIPracticeGenerator subject={focusSubjects.join(', ')} />
+          </div>
+        )}
       </div>
-      
+
       <MiniGameUpgradeModal
         isOpen={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}

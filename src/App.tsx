@@ -142,9 +142,9 @@ const App = () => {
     // Auth state change will handle navigation
   };
 
-  const handleQuestionnaireComplete = (data: { usage: string; subjects: string[]; theme: string }) => {
+  const handleQuestionnaireComplete = async (data: { usage: string; subjects: string[]; theme: string }) => {
     const isAdminMode = localStorage.getItem('ada-admin-mode') === 'true';
-    
+
     const newUserData = {
       name: isAdminMode ? 'Admin User' : (user?.email?.split('@')[0] || 'User'),
       email: isAdminMode ? 'admin@ada.dev' : (user?.email || ''),
@@ -152,9 +152,29 @@ const App = () => {
       subjects: data.subjects,
       theme: data.theme
     };
-    
+
     setUserData(newUserData);
     localStorage.setItem('ada-user-data', JSON.stringify(newUserData));
+
+    // Save questionnaire data to database
+    try {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (authUser) {
+        await supabase
+          .from('user_preferences')
+          .upsert({
+            user_id: authUser.id,
+            usage_type: data.usage,
+            selected_subjects: data.subjects,
+            updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'user_id'
+          });
+      }
+    } catch (error) {
+      console.error('Error saving user preferences:', error);
+    }
+
     setCurrentScreen('loading');
   };
 

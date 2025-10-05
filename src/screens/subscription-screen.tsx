@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { GradientButton } from '@/components/ui/gradient-button';
 import { GradientCard } from '@/components/ui/gradient-card';
 import { ParticleBackground } from '@/components/animations/particle-background';
-import { Check, Zap, Crown, Building, Loader2 } from 'lucide-react';
+import { Check, Zap, Crown, Building, Loader as Loader2 } from 'lucide-react';
 import { STRIPE_PRODUCTS, getProductsByMode } from '@/stripe-config';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
@@ -73,21 +73,35 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
     if (!selectedPlan) return;
 
     setLoading(true);
-    
+
     try {
       // Check if admin mode is active
       const isAdminMode = localStorage.getItem('ada-admin-mode') === 'true';
-      
+
       if (isAdminMode) {
+        // Save plan selection to database for admin mode
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await supabase
+            .from('user_preferences')
+            .upsert({
+              user_id: user.id,
+              subscription_plan: selectedPlan,
+              updated_at: new Date().toISOString()
+            }, {
+              onConflict: 'user_id'
+            });
+        }
+
         // Simulate successful payment for admin
         toast({
           title: "Admin Mode",
           description: "Simulating successful payment...",
         });
-        
+
         // Simulate some delay like a real payment
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+
         // Redirect to success page with simulated session
         window.location.href = `${window.location.origin}/success?session_id=admin_simulation`;
         return;
@@ -113,9 +127,23 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
 
       // Get current user session
       const { data: { session } } = await supabase.auth.getSession();
-      
+
       if (!session) {
         throw new Error('No active session');
+      }
+
+      // Save plan selection to database before checkout
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase
+          .from('user_preferences')
+          .upsert({
+            user_id: user.id,
+            subscription_plan: selectedPlan,
+            updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'user_id'
+          });
       }
 
       // Create checkout session

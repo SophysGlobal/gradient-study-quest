@@ -529,19 +529,14 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
   // AI Tutor Tab
   if (activeTab === 'ai-tutor') {
-    const subscriptionInfo = getSubscriptionInfo();
-    const subscriptionTier = subscriptionInfo?.name.includes('Personal+') ? 'Premium' : 
-                            subscriptionInfo?.name.includes('Enterprise') ? 'Enterprise' : 'Basic';
-    
     return (
       <>
-        <AITutorScreen 
-          user={user} 
-          selectedSubjects={selectedSubjects} 
-          activeTab={activeTab} 
+        <AITutorScreen
+          user={user}
+          selectedSubjects={selectedSubjects}
+          activeTab={activeTab}
           onTabChange={setActiveTab}
-          subscriptionTier={subscriptionTier}
-          onUpgrade={() => setActiveTab('profile')} // Navigate to profile for subscription management
+          onUpgrade={() => setActiveTab('profile')}
         />
         {/* App Settings Modal - Global */}
         {showAppSettings && <AppSettings onClose={() => setShowAppSettings(false)} />}
