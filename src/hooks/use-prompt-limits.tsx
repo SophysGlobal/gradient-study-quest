@@ -10,6 +10,18 @@ interface PromptUsage {
   canUsePrompt: boolean;
 }
 
+const getESTDate = () => {
+  const now = new Date();
+  const estDate = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  return estDate.toISOString().split('T')[0];
+};
+
+const getESTMonth = () => {
+  const now = new Date();
+  const estDate = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  return `${estDate.getFullYear()}-${String(estDate.getMonth() + 1).padStart(2, '0')}`;
+};
+
 export const usePromptLimits = () => {
   const [usage, setUsage] = useState<PromptUsage>({
     dailyUsed: 0,
@@ -40,10 +52,31 @@ export const usePromptLimits = () => {
     }
   };
 
+  const resetAdminPrompts = async () => {
+    const isAdminMode = localStorage.getItem('ada-admin-mode') === 'true';
+    if (!isAdminMode) return;
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      await supabase
+        .from('user_prompt_usage')
+        .delete()
+        .eq('user_id', user.id);
+
+      console.log('Admin prompts reset successfully');
+    } catch (error) {
+      console.error('Error resetting admin prompts:', error);
+    }
+  };
+
   const fetchUsage = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+
+      await resetAdminPrompts();
 
       const isUnlimited = await checkUserPlan();
       setHasUnlimitedPrompts(isUnlimited);
@@ -60,19 +93,32 @@ export const usePromptLimits = () => {
         return;
       }
 
+      const todayEST = getESTDate();
+      const currentMonthEST = getESTMonth();
+
       const { data, error } = await supabase
         .from('user_prompt_usage')
-        .select('daily_prompts_used, monthly_prompts_used')
+        .select('daily_prompts_used, monthly_prompts_used, date, created_at')
         .eq('user_id', user.id)
-        .eq('date', new Date().toISOString().split('T')[0])
+        .eq('date', todayEST)
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
         throw error;
       }
 
-      const dailyUsed = data?.daily_prompts_used || 0;
-      const monthlyUsed = data?.monthly_prompts_used || 0;
+      let dailyUsed = 0;
+      let monthlyUsed = 0;
+
+      if (data) {
+        const recordMonth = data.date.substring(0, 7);
+
+        if (recordMonth === currentMonthEST) {
+          monthlyUsed = data.monthly_prompts_used || 0;
+        }
+
+        dailyUsed = data.daily_prompts_used || 0;
+      }
 
       setUsage({
         dailyUsed,
@@ -95,15 +141,35 @@ export const usePromptLimits = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return false;
 
-      const today = new Date().toISOString().split('T')[0];
+      const todayEST = getESTDate();
+      const currentMonthEST = getESTMonth();
+
+      const { data: existing } = await supabase
+        .from('user_prompt_usage')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('date', todayEST)
+        .maybeSingle();
+
+      let newDailyUsed = 1;
+      let newMonthlyUsed = 1;
+
+      if (existing) {
+        const recordMonth = existing.date.substring(0, 7);
+        newDailyUsed = (existing.daily_prompts_used || 0) + 1;
+        newMonthlyUsed = recordMonth === currentMonthEST
+          ? (existing.monthly_prompts_used || 0) + 1
+          : 1;
+      }
 
       const { data, error } = await supabase
         .from('user_prompt_usage')
         .upsert({
           user_id: user.id,
-          date: today,
-          daily_prompts_used: usage.dailyUsed + 1,
-          monthly_prompts_used: usage.monthlyUsed + 1
+          date: todayEST,
+          daily_prompts_used: newDailyUsed,
+          monthly_prompts_used: newMonthlyUsed,
+          updated_at: new Date().toISOString()
         }, {
           onConflict: 'user_id,date'
         })
