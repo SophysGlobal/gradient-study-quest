@@ -24,7 +24,6 @@ interface AITutorScreenProps {
   selectedSubjects: string[];
   activeTab: string;
   onTabChange: (tab: string) => void;
-  subscriptionTier?: string;
   onUpgrade?: () => void;
 }
 
@@ -33,7 +32,6 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
   selectedSubjects,
   activeTab,
   onTabChange,
-  subscriptionTier,
   onUpgrade
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -45,7 +43,7 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { usage, incrementUsage, hasUnlimitedPrompts } = usePromptLimits(subscriptionTier);
+  const { usage, incrementUsage, hasUnlimitedPrompts } = usePromptLimits();
 
   const getGreeting = () => {
     const hour = new Date().getHours();

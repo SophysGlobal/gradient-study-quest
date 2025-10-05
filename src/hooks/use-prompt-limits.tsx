@@ -10,7 +10,7 @@ interface PromptUsage {
   canUsePrompt: boolean;
 }
 
-export const usePromptLimits = (subscriptionTier?: string) => {
+export const usePromptLimits = () => {
   const [usage, setUsage] = useState<PromptUsage>({
     dailyUsed: 0,
     monthlyUsed: 0,
@@ -19,24 +19,55 @@ export const usePromptLimits = (subscriptionTier?: string) => {
     canUsePrompt: true
   });
   const [loading, setLoading] = useState(true);
+  const [hasUnlimitedPrompts, setHasUnlimitedPrompts] = useState(false);
   const { toast } = useToast();
 
-  // Personal+ and Enterprise have unlimited prompts
-  const hasUnlimitedPrompts = subscriptionTier === 'Premium' || subscriptionTier === 'Enterprise';
+  const checkUserPlan = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return false;
+
+      const { data: preferences } = await supabase
+        .from('user_preferences')
+        .select('subscription_plan')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      return preferences?.subscription_plan === 'personal-plus';
+    } catch (error) {
+      console.error('Error checking user plan:', error);
+      return false;
+    }
+  };
 
   const fetchUsage = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      const isUnlimited = await checkUserPlan();
+      setHasUnlimitedPrompts(isUnlimited);
+
+      if (isUnlimited) {
+        setUsage({
+          dailyUsed: 0,
+          monthlyUsed: 0,
+          dailyLimit: 999,
+          monthlyLimit: 999,
+          canUsePrompt: true
+        });
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('user_prompt_usage')
         .select('daily_prompts_used, monthly_prompts_used')
         .eq('user_id', user.id)
         .eq('date', new Date().toISOString().split('T')[0])
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
+      if (error && error.code !== 'PGRST116') {
         throw error;
       }
 
@@ -48,7 +79,7 @@ export const usePromptLimits = (subscriptionTier?: string) => {
         monthlyUsed,
         dailyLimit: 3,
         monthlyLimit: 15,
-        canUsePrompt: hasUnlimitedPrompts || (dailyUsed < 3 && monthlyUsed < 15)
+        canUsePrompt: dailyUsed < 3 && monthlyUsed < 15
       });
     } catch (error) {
       console.error('Error fetching prompt usage:', error);
@@ -65,8 +96,7 @@ export const usePromptLimits = (subscriptionTier?: string) => {
       if (!user) return false;
 
       const today = new Date().toISOString().split('T')[0];
-      
-      // Upsert usage record
+
       const { data, error } = await supabase
         .from('user_prompt_usage')
         .upsert({
@@ -78,17 +108,18 @@ export const usePromptLimits = (subscriptionTier?: string) => {
           onConflict: 'user_id,date'
         })
         .select()
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
 
-      // Update local state
-      setUsage(prev => ({
-        ...prev,
-        dailyUsed: data.daily_prompts_used,
-        monthlyUsed: data.monthly_prompts_used,
-        canUsePrompt: data.daily_prompts_used < 3 && data.monthly_prompts_used < 15
-      }));
+      if (data) {
+        setUsage(prev => ({
+          ...prev,
+          dailyUsed: data.daily_prompts_used,
+          monthlyUsed: data.monthly_prompts_used,
+          canUsePrompt: data.daily_prompts_used < 3 && data.monthly_prompts_used < 15
+        }));
+      }
 
       return true;
     } catch (error) {
@@ -104,7 +135,7 @@ export const usePromptLimits = (subscriptionTier?: string) => {
 
   useEffect(() => {
     fetchUsage();
-  }, [hasUnlimitedPrompts]);
+  }, []);
 
   return {
     usage,
