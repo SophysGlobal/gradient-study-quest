@@ -18,8 +18,10 @@ export const AITutorChat: React.FC<AITutorChatProps> = ({ subject }) => {
 
   const handleGenerateFlashcards = async () => {
     if (!prompt.trim()) return;
-    
+
     setLoading(true);
+    console.log('Generating flashcards for:', subject, 'with prompt:', prompt);
+
     try {
       const { data, error } = await supabase.functions.invoke('ai-tutor', {
         body: {
@@ -28,6 +30,8 @@ export const AITutorChat: React.FC<AITutorChatProps> = ({ subject }) => {
           prompt: `Generate 3 flashcards about: ${prompt}`
         }
       });
+
+      console.log('Flashcard response:', { data, error });
 
       if (error) {
         // Check for rate limit or payment errors
@@ -54,14 +58,32 @@ export const AITutorChat: React.FC<AITutorChatProps> = ({ subject }) => {
 
       if (data.success) {
         try {
+          console.log('Parsing flashcard response:', data.response);
           const flashcards = JSON.parse(data.response);
-          setGeneratedFlashcards(flashcards);
-          setResponse('Generated custom flashcards!');
-        } catch {
+          console.log('Parsed flashcards:', flashcards);
+
+          if (Array.isArray(flashcards) && flashcards.length > 0) {
+            setGeneratedFlashcards(flashcards);
+            setResponse('Generated custom flashcards!');
+            toast({
+              title: "Success!",
+              description: `Generated ${flashcards.length} flashcards`,
+            });
+          } else {
+            throw new Error('Invalid flashcard format');
+          }
+        } catch (parseError) {
+          console.error('Parse error:', parseError);
           setResponse(data.response);
+          toast({
+            title: "Warning",
+            description: "Flashcards generated but couldn't parse format",
+            variant: "destructive",
+          });
         }
       } else {
-        throw new Error(data.error);
+        console.error('Data not successful:', data);
+        throw new Error(data.error || 'Unknown error');
       }
     } catch (error) {
       console.error('Error:', error);
