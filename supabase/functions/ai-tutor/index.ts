@@ -18,16 +18,16 @@ Deno.serve(async (req: Request) => {
     const { prompt, type, subject } = await req.json();
 
     const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
-    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
-    const apiKey = openaiApiKey || lovableApiKey;
-    const apiUrl = openaiApiKey
-      ? 'https://api.openai.com/v1/chat/completions'
-      : 'https://ai.gateway.lovable.dev/v1/chat/completions';
-    const model = openaiApiKey ? 'gpt-4o-mini' : 'google/gemini-2.0-flash-exp';
-
-    if (!apiKey) {
-      throw new Error('No AI API key configured');
+    if (!openaiApiKey) {
+      console.error('OpenAI API key not configured');
+      return new Response(JSON.stringify({
+        error: 'AI service not configured. Please contact support.',
+        success: false
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     let systemMessage = '';
@@ -75,16 +75,16 @@ Example format:
       maxTokens = 400;
     }
 
-    console.log(`Generating ${type} for ${subject} using ${openaiApiKey ? 'OpenAI' : 'Lovable AI Gateway'}`);
+    console.log(`Generating ${type} for ${subject} using OpenAI`);
 
-    const response = await fetch(apiUrl, {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${openaiApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: model,
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemMessage },
           { role: 'user', content: prompt }
@@ -97,7 +97,7 @@ Example format:
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('AI API error:', data);
+      console.error('OpenAI API error:', data);
 
       if (response.status === 429) {
         return new Response(JSON.stringify({
@@ -109,12 +109,12 @@ Example format:
         });
       }
 
-      if (response.status === 402) {
+      if (response.status === 401) {
         return new Response(JSON.stringify({
-          error: 'AI usage limit reached. Please add credits to continue.',
+          error: 'AI service authentication failed. Please contact support.',
           success: false
         }), {
-          status: 402,
+          status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
