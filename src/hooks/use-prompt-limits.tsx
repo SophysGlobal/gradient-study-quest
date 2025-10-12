@@ -36,16 +36,33 @@ export const usePromptLimits = () => {
 
   const checkUserPlan = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return false;
+      const isAdminMode = localStorage.getItem('ada-admin-mode') === 'true';
+      if (isAdminMode) {
+        console.log('Admin mode detected - unlimited prompts');
+        return true;
+      }
 
-      const { data: preferences } = await supabase
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.log('No user found');
+        return false;
+      }
+
+      const { data: preferences, error } = await supabase
         .from('user_preferences')
         .select('subscription_plan')
         .eq('user_id', user.id)
         .maybeSingle();
 
-      return preferences?.subscription_plan === 'personal-plus';
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching preferences:', error);
+        return false;
+      }
+
+      const plan = preferences?.subscription_plan || 'personal';
+      console.log('User plan:', plan);
+
+      return plan === 'personal-plus';
     } catch (error) {
       console.error('Error checking user plan:', error);
       return false;
@@ -74,7 +91,10 @@ export const usePromptLimits = () => {
   const fetchUsage = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
 
       await resetAdminPrompts();
 
@@ -82,6 +102,7 @@ export const usePromptLimits = () => {
       setHasUnlimitedPrompts(isUnlimited);
 
       if (isUnlimited) {
+        console.log('User has unlimited prompts');
         setUsage({
           dailyUsed: 0,
           monthlyUsed: 0,
@@ -104,7 +125,7 @@ export const usePromptLimits = () => {
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
-        throw error;
+        console.error('Error fetching usage:', error);
       }
 
       let dailyUsed = 0;
@@ -120,6 +141,8 @@ export const usePromptLimits = () => {
         dailyUsed = data.daily_prompts_used || 0;
       }
 
+      console.log('Prompt usage:', { dailyUsed, monthlyUsed, canUsePrompt: dailyUsed < 3 && monthlyUsed < 15 });
+
       setUsage({
         dailyUsed,
         monthlyUsed,
@@ -129,13 +152,20 @@ export const usePromptLimits = () => {
       });
     } catch (error) {
       console.error('Error fetching prompt usage:', error);
+      setUsage(prev => ({
+        ...prev,
+        canUsePrompt: true
+      }));
     } finally {
       setLoading(false);
     }
   };
 
   const incrementUsage = async (): Promise<boolean> => {
-    if (hasUnlimitedPrompts) return true;
+    if (hasUnlimitedPrompts) {
+      console.log('Unlimited prompts - skipping increment');
+      return true;
+    }
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -162,6 +192,8 @@ export const usePromptLimits = () => {
           : 1;
       }
 
+      console.log('Incrementing usage to:', { newDailyUsed, newMonthlyUsed });
+
       const { data, error } = await supabase
         .from('user_prompt_usage')
         .upsert({
@@ -176,7 +208,10 @@ export const usePromptLimits = () => {
         .select()
         .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error incrementing usage:', error);
+        throw error;
+      }
 
       if (data) {
         setUsage(prev => ({
