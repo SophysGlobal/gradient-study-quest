@@ -8,7 +8,7 @@ import { MiniGameUpgradeModal } from '@/components/mini-game-upgrade-modal';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { usePromptLimits } from '@/hooks/use-prompt-limits';
-import { Bot, Send, User, Loader as Loader2, Brain, Sparkles, MessageCircle, Check, Calendar, BookOpen } from 'lucide-react';
+import { Bot, Send, User, Loader as Loader2, Brain, Sparkles, MessageCircle, Check, Calendar, BookOpen, RotateCcw } from 'lucide-react';
 import { AIStudyPlanner } from '@/components/ai-study-planner';
 import { AIPracticeGenerator } from '@/components/ai-practice-generator';
 
@@ -45,7 +45,33 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { usage, incrementUsage, hasUnlimitedPrompts } = usePromptLimits();
+  const { usage, incrementUsage, hasUnlimitedPrompts, refreshUsage } = usePromptLimits();
+
+  const resetPrompts = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      await supabase
+        .from('user_prompt_usage')
+        .delete()
+        .eq('user_id', user.id);
+
+      await refreshUsage();
+      
+      toast({
+        title: "Success",
+        description: "Your prompt usage has been reset!",
+      });
+    } catch (error) {
+      console.error('Error resetting prompts:', error);
+      toast({
+        title: "Error",
+        description: "Failed to reset prompts. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -208,7 +234,16 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
               <p className="text-xs text-text-secondary truncate">Focus: {focusSubjects.join(', ')}</p>
             </div>
             {!hasUnlimitedPrompts && (
-              <div className="text-right flex-shrink-0">
+              <div className="text-right flex-shrink-0 flex items-center gap-2">
+                <button
+                  onClick={resetPrompts}
+                  className="gradient-outline rounded-lg p-1 hover:scale-105 transition-transform cursor-pointer"
+                  title="Reset prompt usage"
+                >
+                  <div className="gradient-outline-content px-2 py-1 bg-surface/50 rounded-lg">
+                    <RotateCcw className="w-4 h-4 text-gradient-purple" />
+                  </div>
+                </button>
                 <button
                   onClick={() => setShowUpgradeModal(true)}
                   className="gradient-outline rounded-lg p-1 hover:scale-105 transition-transform cursor-pointer"
