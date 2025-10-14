@@ -42,7 +42,6 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
   const [focusSubjects, setFocusSubjects] = useState<string[]>(selectedSubjects);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [limitType, setLimitType] = useState<'daily' | 'monthly'>('daily');
-  const [activeFeature, setActiveFeature] = useState<'chat' | 'planner' | 'practice'>('chat');
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -261,48 +260,10 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
               ))}
             </div>
           </div>
-
-          {/* Feature Tabs */}
-          <div className="flex gap-2 px-3 pb-2">
-            <button
-              onClick={() => setActiveFeature('chat')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs transition-all ${
-                activeFeature === 'chat'
-                  ? 'bg-gradient-to-r from-purple-500 to-orange-500 text-white'
-                  : 'bg-surface-muted text-text-secondary hover:bg-surface-hover'
-              }`}
-            >
-              <MessageCircle className="w-3 h-3" />
-              Chat
-            </button>
-            <button
-              onClick={() => setActiveFeature('planner')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs transition-all ${
-                activeFeature === 'planner'
-                  ? 'bg-gradient-to-r from-purple-500 to-orange-500 text-white'
-                  : 'bg-surface-muted text-text-secondary hover:bg-surface-hover'
-              }`}
-            >
-              <Calendar className="w-3 h-3" />
-              Study Plan
-            </button>
-            <button
-              onClick={() => setActiveFeature('practice')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs transition-all ${
-                activeFeature === 'practice'
-                  ? 'bg-gradient-to-r from-purple-500 to-orange-500 text-white'
-                  : 'bg-surface-muted text-text-secondary hover:bg-surface-hover'
-              }`}
-            >
-              <BookOpen className="w-3 h-3" />
-              Practice
-            </button>
-          </div>
         </div>
 
         {/* Content Area */}
-        {activeFeature === 'chat' && (
-          <>
+        <>
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-32">
           {messages.map(message => (
@@ -435,20 +396,7 @@ export const AITutorScreen: React.FC<AITutorScreenProps> = ({
             </div>
           </div>
             </div>
-          </>
-        )}
-
-        {activeFeature === 'planner' && (
-          <div className="flex-1 overflow-y-auto p-4 pb-32">
-            <AIStudyPlanner subject={focusSubjects.join(', ')} />
-          </div>
-        )}
-
-        {activeFeature === 'practice' && (
-          <div className="flex-1 overflow-y-auto p-4 pb-32">
-            <AIPracticeGenerator subject={focusSubjects.join(', ')} />
-          </div>
-        )}
+        </>
       </div>
 
       <MiniGameUpgradeModal

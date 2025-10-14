@@ -159,14 +159,14 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
 
         {/* Step 2: Subject Selection */}
         {step === 2 && (
-          <div className="flex-1 flex flex-col transition-all duration-500 ease-out animate-in fade-in slide-in-from-bottom-4 min-h-0">
+          <div className="flex-1 flex flex-col transition-all duration-500 ease-out animate-in fade-in slide-in-from-bottom-4 min-h-0 overflow-hidden">
             <div className="text-center mb-4 flex-shrink-0">
               <p className="text-sm text-text-secondary">
                 {selectedSubjects.length} subject{selectedSubjects.length !== 1 ? 's' : ''} selected
               </p>
             </div>
             
-            <div className="flex-1 overflow-y-auto space-y-3 px-1 pb-20">
+            <div className="flex-1 overflow-y-auto space-y-3 px-1 pb-24">
               {apSubjects.map((subject, index) => (
                 <div
                   key={subject}
