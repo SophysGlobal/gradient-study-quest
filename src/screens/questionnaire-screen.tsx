@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { GradientButton } from '@/components/ui/gradient-button';
 import { GradientCard } from '@/components/ui/gradient-card';
 import { ParticleBackground } from '@/components/animations/particle-background';
-import { ChevronRight, Check, Sun, Moon } from 'lucide-react';
+import { ChevronRight, Check, Sun, Moon, ArrowLeft } from 'lucide-react';
 import { useTheme } from '@/contexts/theme-context';
+import { Button } from '@/components/ui/button';
 
 interface QuestionnaireScreenProps {
   onComplete: (data: { usage: string; subjects: string[]; theme: string }) => void;
@@ -63,13 +64,32 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
     }
   };
 
+  const handleBack = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    }
+  };
+
   const canContinue = (step === 1 && usage) || (step === 2 && selectedSubjects.length > 0) || (step === 3 && selectedTheme);
 
   return (
     <div className="min-h-screen bg-background relative flex flex-col p-6">
       <ParticleBackground />
 
-      <div className="relative z-10 flex-1 max-w-md mx-auto w-full pb-24">
+      <div className="relative z-10 flex-1 max-w-md mx-auto w-full pb-32">
+        {/* Back Button */}
+        {step > 1 && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleBack}
+            className="mb-4 animate-fade-in"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back
+          </Button>
+        )}
+        
         {/* Header */}
         <div className="text-center mb-8 animate-fade-in">
           <div className="flex items-center justify-center mb-4">
@@ -146,7 +166,7 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
               </p>
             </div>
             
-            <div className="max-h-96 overflow-y-auto space-y-3 px-1">
+            <div className="max-h-[60vh] overflow-y-auto space-y-3 px-1 pb-4">
               {apSubjects.map((subject, index) => (
                 <div
                   key={subject}
@@ -243,7 +263,7 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
         <div className={`fixed bottom-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
           canContinue ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
         }`}>
-          <div className="backdrop-blur-md bg-background/50 border-t border-card-border/30 px-6 py-4">
+          <div className="backdrop-blur-md bg-background/95 border-t border-card-border/30 px-6 py-4 shadow-lg">
             <div className="max-w-md mx-auto">
               <GradientButton
                 size="lg"

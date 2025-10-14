@@ -17,10 +17,10 @@ Deno.serve(async (req: Request) => {
   try {
     const { prompt, type, subject } = await req.json();
 
-    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
-    if (!openaiApiKey) {
-      console.error('OpenAI API key not configured');
+    if (!lovableApiKey) {
+      console.error('Lovable API key not configured');
       return new Response(JSON.stringify({
         error: 'AI service not configured. Please contact support.',
         success: false
@@ -75,16 +75,16 @@ Example format:
       maxTokens = 400;
     }
 
-    console.log(`Generating ${type} for ${subject} using OpenAI`);
+    console.log(`Generating ${type} for ${subject} using Lovable AI`);
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://api.lovable.app/v1/ai-gateway/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openaiApiKey}`,
+        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-2.0-flash-exp',
         messages: [
           { role: 'system', content: systemMessage },
           { role: 'user', content: prompt }
@@ -97,7 +97,7 @@ Example format:
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('OpenAI API error:', data);
+      console.error('AI API error:', data);
 
       if (response.status === 429) {
         return new Response(JSON.stringify({
@@ -105,6 +105,16 @@ Example format:
           success: false
         }), {
           status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      if (response.status === 402) {
+        return new Response(JSON.stringify({
+          error: 'AI usage limit reached. Please upgrade your plan.',
+          success: false
+        }), {
+          status: 402,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
