@@ -73,10 +73,10 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
   const canContinue = (step === 1 && usage) || (step === 2 && selectedSubjects.length > 0) || (step === 3 && selectedTheme);
 
   return (
-    <div className="min-h-screen bg-background relative flex flex-col p-6">
+    <div className="h-screen bg-background relative flex flex-col overflow-hidden">
       <ParticleBackground />
 
-      <div className="relative z-10 flex-1 max-w-md mx-auto w-full pb-32">
+      <div className="relative z-10 flex-1 max-w-md mx-auto w-full flex flex-col p-6">
         {/* Back Button */}
         {step > 1 && (
           <Button
@@ -91,7 +91,7 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
         )}
         
         {/* Header */}
-        <div className="text-center mb-8 animate-fade-in">
+        <div className="text-center mb-6 animate-fade-in flex-shrink-0">
           <div className="flex items-center justify-center mb-4">
             <div className="flex space-x-2">
               <div className={`w-3 h-3 rounded-full transition-colors ${step >= 1 ? 'bg-gradient-purple' : 'bg-surface-muted'}`} />
@@ -114,7 +114,7 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
 
         {/* Step 1: Usage Type */}
         {step === 1 && (
-          <div className="space-y-4 transition-all duration-500 ease-out animate-in fade-in slide-in-from-bottom-4">
+          <div className="space-y-4 transition-all duration-500 ease-out animate-in fade-in slide-in-from-bottom-4 flex-shrink-0">
             <h2 className="text-lg font-semibold text-text-primary mb-6 animate-fade-in">
               How will you be using ADA?
             </h2>
@@ -159,14 +159,14 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
 
         {/* Step 2: Subject Selection */}
         {step === 2 && (
-          <div className="space-y-4 transition-all duration-500 ease-out animate-in fade-in slide-in-from-bottom-4">
-            <div className="text-center mb-6">
+          <div className="flex-1 flex flex-col transition-all duration-500 ease-out animate-in fade-in slide-in-from-bottom-4 min-h-0">
+            <div className="text-center mb-4 flex-shrink-0">
               <p className="text-sm text-text-secondary">
                 {selectedSubjects.length} subject{selectedSubjects.length !== 1 ? 's' : ''} selected
               </p>
             </div>
             
-            <div className="max-h-[60vh] overflow-y-auto space-y-3 px-1 pb-4">
+            <div className="flex-1 overflow-y-auto space-y-3 px-1 pb-20">
               {apSubjects.map((subject, index) => (
                 <div
                   key={subject}
@@ -196,7 +196,7 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
 
         {/* Step 3: Theme Selection */}
         {step === 3 && (
-          <div className="space-y-4 transition-all duration-500 ease-out animate-in fade-in slide-in-from-bottom-4">
+          <div className="space-y-4 transition-all duration-500 ease-out animate-in fade-in slide-in-from-bottom-4 flex-shrink-0">
             <h2 className="text-lg font-semibold text-text-primary mb-6 text-center">
               Choose your preferred theme
             </h2>
