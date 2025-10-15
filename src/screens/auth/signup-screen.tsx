@@ -5,6 +5,24 @@ import { ParticleBackground } from '@/components/animations/particle-background'
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { z } from 'zod';
+
+const signupSchema = z.object({
+  email: z.string()
+    .trim()
+    .email({ message: 'Invalid email address' })
+    .max(255, { message: 'Email must be less than 255 characters' }),
+  password: z.string()
+    .min(8, { message: 'Password must be at least 8 characters' })
+    .regex(/[A-Z]/, { message: 'Password must contain an uppercase letter' })
+    .regex(/[a-z]/, { message: 'Password must contain a lowercase letter' })
+    .regex(/[0-9]/, { message: 'Password must contain a number' })
+    .max(128, { message: 'Password must be less than 128 characters' }),
+  confirmPassword: z.string()
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ['confirmPassword']
+});
 
 interface SignupScreenProps {
   onSignup: () => void;
@@ -26,28 +44,18 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password || !confirmPassword) {
-      toast({
-        title: "Error",
-        description: "Please fill in all fields",
-        variant: "destructive"
-      });
-      return;
-    }
+    // Validate with zod schema
+    const validationResult = signupSchema.safeParse({
+      email: email.trim(),
+      password,
+      confirmPassword
+    });
 
-    if (password !== confirmPassword) {
+    if (!validationResult.success) {
+      const firstError = validationResult.error.errors[0];
       toast({
-        title: "Error",
-        description: "Passwords do not match",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (password.length < 6) {
-      toast({
-        title: "Error",
-        description: "Password must be at least 6 characters long",
+        title: "Validation Error",
+        description: firstError.message,
         variant: "destructive"
       });
       return;
@@ -57,15 +65,20 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({
     
     try {
       const { error } = await supabase.auth.signUp({
-        email,
-        password,
+        email: validationResult.data.email,
+        password: validationResult.data.password,
         options: {
-          emailRedirectTo: undefined, // Disable email confirmation
+          emailRedirectTo: `${window.location.origin}/`,
         }
       });
 
       if (error) {
-        throw error;
+        // Map Supabase errors to user-friendly messages
+        const userMessage = error.message.includes('already registered') 
+          ? 'This email is already registered'
+          : 'Unable to create account. Please try again.';
+        
+        throw new Error(userMessage);
       }
 
       toast({
@@ -75,7 +88,7 @@ export const SignupScreen: React.FC<SignupScreenProps> = ({
       
       onSignup();
     } catch (error: any) {
-      console.error('Signup error:', error);
+      // Don't log detailed errors to console in production
       toast({
         title: "Signup Failed",
         description: error.message || "Failed to create account",

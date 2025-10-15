@@ -1,4 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,6 +16,83 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
+    // Verify authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ 
+        error: 'Unauthorized', 
+        success: false 
+      }), { 
+        status: 401, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      });
+    }
+
+    // Create Supabase client with user's JWT
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseClient = await createClient(supabaseUrl, supabaseKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    
+    if (userError || !user) {
+      return new Response(JSON.stringify({ 
+        error: 'Invalid authentication', 
+        success: false 
+      }), { 
+        status: 401, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      });
+    }
+
+    // Check subscription status and prompt limits server-side
+    const { data: customer } = await supabaseClient
+      .from('stripe_customers')
+      .select('customer_id')
+      .eq('user_id', user.id)
+      .is('deleted_at', null)
+      .maybeSingle();
+
+    let hasActiveSubscription = false;
+    
+    if (customer) {
+      const { data: subscription } = await supabaseClient
+        .from('stripe_subscriptions')
+        .select('status')
+        .eq('customer_id', customer.customer_id)
+        .is('deleted_at', null)
+        .maybeSingle();
+      
+      hasActiveSubscription = subscription?.status === 'active';
+    }
+
+    // If no active subscription, verify prompt limits
+    if (!hasActiveSubscription) {
+      const today = new Date().toISOString().split('T')[0];
+      
+      const { data: usage } = await supabaseClient
+        .from('user_prompt_usage')
+        .select('daily_prompts_used, monthly_prompts_used')
+        .eq('user_id', user.id)
+        .eq('date', today)
+        .maybeSingle();
+
+      const dailyUsed = usage?.daily_prompts_used || 0;
+      const monthlyUsed = usage?.monthly_prompts_used || 0;
+
+      if (dailyUsed >= 3 || monthlyUsed >= 15) {
+        return new Response(JSON.stringify({ 
+          error: 'Daily or monthly prompt limit reached. Upgrade to continue.', 
+          success: false 
+        }), { 
+          status: 429, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        });
+      }
+    }
+
     const { prompt, type, subject } = await req.json();
 
     // Validate request body
