@@ -17,6 +17,51 @@ Deno.serve(async (req: Request) => {
   try {
     const { prompt, type, subject } = await req.json();
 
+    // Validate request body
+    if (!prompt || typeof prompt !== 'string') {
+      return new Response(JSON.stringify({ 
+        error: 'Invalid prompt', 
+        success: false 
+      }), { 
+        status: 400, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      });
+    }
+
+    if (prompt.length > 2000) {
+      return new Response(JSON.stringify({ 
+        error: 'Prompt too long. Maximum 2000 characters allowed.', 
+        success: false 
+      }), { 
+        status: 400, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      });
+    }
+
+    const validTypes = ['flashcard', 'explanation', 'quiz'];
+    if (!type || !validTypes.includes(type)) {
+      return new Response(JSON.stringify({ 
+        error: 'Invalid type. Must be: flashcard, explanation, or quiz', 
+        success: false 
+      }), { 
+        status: 400, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      });
+    }
+
+    if (!subject || typeof subject !== 'string' || subject.trim().length === 0) {
+      return new Response(JSON.stringify({ 
+        error: 'Invalid subject', 
+        success: false 
+      }), { 
+        status: 400, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      });
+    }
+
+    // Sanitize prompt
+    const sanitizedPrompt = prompt.trim();
+
     const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
     if (!lovableApiKey) {
@@ -87,7 +132,7 @@ Example format:
         model: 'google/gemini-2.0-flash-exp',
         messages: [
           { role: 'system', content: systemMessage },
-          { role: 'user', content: prompt }
+          { role: 'user', content: sanitizedPrompt }
         ],
         max_tokens: maxTokens,
         temperature: 0.7,

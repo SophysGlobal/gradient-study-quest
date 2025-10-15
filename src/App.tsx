@@ -39,19 +39,7 @@ const App = () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         
-        // Check if admin mode is active (bypasses auth)
-        const isAdminMode = localStorage.getItem('ada-admin-mode') === 'true';
-        
-        if (isAdminMode) {
-          // Admin mode - check if questionnaire completed
-          const savedUserData = localStorage.getItem('ada-user-data');
-          if (savedUserData) {
-            setUserData(JSON.parse(savedUserData));
-            setCurrentScreen('dashboard');
-          } else {
-            setCurrentScreen('questionnaire');
-          }
-        } else if (session?.user) {
+        if (session?.user) {
           setUser(session.user);
           
           // Regular user flow
@@ -126,7 +114,6 @@ const App = () => {
         setUser(null);
         setUserData(null);
         localStorage.removeItem('ada-user-data');
-        localStorage.removeItem('ada-admin-mode');
         setCurrentScreen('login');
       }
     });
@@ -143,11 +130,9 @@ const App = () => {
   };
 
   const handleQuestionnaireComplete = async (data: { usage: string; subjects: string[]; theme: string }) => {
-    const isAdminMode = localStorage.getItem('ada-admin-mode') === 'true';
-
     const newUserData = {
-      name: isAdminMode ? 'Admin User' : (user?.email?.split('@')[0] || 'User'),
-      email: isAdminMode ? 'admin@ada.dev' : (user?.email || ''),
+      name: user?.email?.split('@')[0] || 'User',
+      email: user?.email || '',
       usage: data.usage,
       subjects: data.subjects,
       theme: data.theme

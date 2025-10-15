@@ -19,8 +19,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
-  const [logoTaps, setLogoTaps] = useState(0);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,35 +63,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     }
   };
 
-  // Hidden admin login activation (tap logo 5 times quickly)
-  const handleLogoClick = () => {
-    setLogoTaps(prev => prev + 1);
-    if (logoTaps >= 4) {
-      setShowAdminLogin(true);
-      setEmail('admin@ada.dev');
-      setPassword('dev123');
-    }
-    setTimeout(() => setLogoTaps(0), 2000);
-  };
-
-  const adminLogin = async () => {
-    setLoading(true);
-    
-    // Simulate admin login for development
-    setTimeout(() => {
-      // Set admin mode but don't set user data yet - let questionnaire handle it
-      localStorage.setItem('ada-admin-mode', 'true');
-      
-      toast({
-        title: "Success",
-        description: "Admin login successful!",
-      });
-      
-      setLoading(false);
-      // Force reload to trigger auth check with admin mode
-      window.location.reload();
-    }, 500);
-  };
 
   return (
     <div className="min-h-screen bg-background relative flex flex-col justify-center items-center p-6">
@@ -101,8 +70,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       
       <div className="relative z-10 w-full max-w-sm space-y-8 animate-fade-in">
         {/* Logo Section */}
-        <div className="text-center space-y-4" onClick={handleLogoClick}>
-          <div className="w-20 h-20 mx-auto mb-4 gradient-outline rounded-2xl p-1 cursor-pointer">
+        <div className="text-center space-y-4">
+          <div className="w-20 h-20 mx-auto mb-4 gradient-outline rounded-2xl p-1">
             <div className="w-full h-full gradient-outline-content rounded-xl flex items-center justify-center bg-background">
               <img src="/lovable-uploads/df8fefa1-f972-424c-8656-7a77d894efdf.png" alt="ADA" className="w-12 h-12" />
             </div>
@@ -161,21 +130,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           </div>
         </form>
 
-        {/* Admin Test Login (Hidden) */}
-        {showAdminLogin && (
-          <div className="mt-6 p-4 border border-gaming-warning/30 rounded-lg bg-surface-elevated animate-scale-in">
-            <p className="text-sm text-gaming-warning mb-2">Developer Mode</p>
-            <GradientButton
-              size="sm"
-              className="w-full"
-              onClick={adminLogin}
-              disabled={loading}
-            >
-              Admin Test Login
-            </GradientButton>
-          </div>
-        )}
-
         {/* Sign Up Link */}
         <div className="text-center">
           <p className="text-text-secondary">
@@ -187,11 +141,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               Sign up
             </button>
           </p>
-        </div>
-
-        {/* Footer */}
-        <div className="text-center text-sm text-text-muted">
-          Tap the logo 5 times for developer access
         </div>
       </div>
     </div>

@@ -6,4 +6,4 @@ site_url = "https://b92622f2-c103-408b-9015-0b4c178baae5.sandbox.lovable.dev"
 additional_redirect_urls = ["https://localhost:3000"]
 
 [functions.ai-tutor]
-verify_jwt = false
+verify_jwt = true

@@ -54,20 +54,6 @@ export const MiniGameUpgradeModal: React.FC<MiniGameUpgradeModalProps> = ({
     setLoading(true);
     
     try {
-      // Check if admin mode is active
-      const isAdminMode = localStorage.getItem('ada-admin-mode') === 'true';
-      
-      if (isAdminMode) {
-        toast({
-          title: "Admin Mode",
-          description: "Simulating successful payment...",
-        });
-        
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        window.location.href = `${window.location.origin}/success?session_id=admin_simulation`;
-        return;
-      }
-
       // Find the matching product based on billing cycle
       const productName = billingCycle === 'monthly'
         ? 'ADA Education Personal+ Plan (Monthly)'

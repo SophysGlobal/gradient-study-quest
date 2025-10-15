@@ -36,12 +36,6 @@ export const usePromptLimits = () => {
 
   const checkUserPlan = async () => {
     try {
-      const isAdminMode = localStorage.getItem('ada-admin-mode') === 'true';
-      if (isAdminMode) {
-        console.log('Admin mode detected - unlimited prompts');
-        return true;
-      }
-
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         console.log('No user found');
@@ -69,24 +63,6 @@ export const usePromptLimits = () => {
     }
   };
 
-  const resetAdminPrompts = async () => {
-    const isAdminMode = localStorage.getItem('ada-admin-mode') === 'true';
-    if (!isAdminMode) return;
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      await supabase
-        .from('user_prompt_usage')
-        .delete()
-        .eq('user_id', user.id);
-
-      console.log('Admin prompts reset successfully');
-    } catch (error) {
-      console.error('Error resetting admin prompts:', error);
-    }
-  };
 
   const fetchUsage = async () => {
     try {
@@ -95,8 +71,6 @@ export const usePromptLimits = () => {
         setLoading(false);
         return;
       }
-
-      await resetAdminPrompts();
 
       const isUnlimited = await checkUserPlan();
       setHasUnlimitedPrompts(isUnlimited);
