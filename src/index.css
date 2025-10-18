@@ -427,6 +427,40 @@
   100% { transform: translateX(-150px); }
 }
 
+/* Custom Scrollbar Styles */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--gradient-purple) / 0.5) hsl(var(--surface-muted));
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: hsl(var(--surface-muted));
+  border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, hsl(var(--gradient-purple)), hsl(var(--gradient-orange)));
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, hsl(var(--gradient-purple) / 0.8), hsl(var(--gradient-orange) / 0.8));
+}
+
+.scrollbar-thumb-gradient-purple::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, hsl(var(--gradient-purple)), hsl(var(--gradient-orange)));
+}
+
+.scrollbar-track-surface-muted::-webkit-scrollbar-track {
+  background: hsl(var(--surface-muted));
+}
+
 @layer base {
   * {
     @apply border-border;

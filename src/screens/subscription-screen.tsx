@@ -75,6 +75,42 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
     setLoading(true);
 
     try {
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error('No active user');
+      }
+
+      // Check if user is admin
+      const { data: isAdmin } = await supabase.rpc('has_role', {
+        _user_id: user.id,
+        _role: 'admin'
+      });
+
+      // If admin, bypass Stripe and grant subscription directly
+      if (isAdmin) {
+        await supabase
+          .from('user_preferences')
+          .upsert({
+            user_id: user.id,
+            subscription_plan: selectedPlan,
+            updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'user_id'
+          });
+
+        toast({
+          title: "Success!",
+          description: "Admin access granted. Subscription activated.",
+        });
+
+        // Trigger plan selection callback
+        onSelectPlan(selectedPlan, billingCycle);
+        return;
+      }
+
+      // Non-admin users: proceed with Stripe checkout
       // Find the matching product based on plan and billing cycle
       let productName = '';
       if (selectedPlan === 'personal') {
@@ -101,18 +137,15 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
       }
 
       // Save plan selection to database before checkout
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase
-          .from('user_preferences')
-          .upsert({
-            user_id: user.id,
-            subscription_plan: selectedPlan,
-            updated_at: new Date().toISOString()
-          }, {
-            onConflict: 'user_id'
-          });
-      }
+      await supabase
+        .from('user_preferences')
+        .upsert({
+          user_id: user.id,
+          subscription_plan: selectedPlan,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
+        });
 
       // Create checkout session
       const { data, error } = await supabase.functions.invoke('stripe-checkout', {
@@ -139,9 +172,17 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
       }
     } catch (error: any) {
       console.error('Checkout error:', error);
+      
+      // Provide helpful error message
+      let errorMessage = error.message || "Failed to start checkout process";
+      
+      if (error.message?.includes('not active') || error.message?.includes('not available')) {
+        errorMessage = "Your Stripe products need to be activated. Please visit your Stripe Dashboard to activate the products.";
+      }
+      
       toast({
         title: "Error",
-        description: error.message || "Failed to start checkout process",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
