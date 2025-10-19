@@ -159,33 +159,52 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
 
         {/* Step 2: Subject Selection */}
         {step === 2 && (
-          <div className="flex-1 flex flex-col transition-all duration-500 ease-out animate-in fade-in slide-in-from-bottom-4 min-h-0 overflow-hidden">
-            <div className="text-center mb-4 flex-shrink-0">
-              <p className="text-sm text-text-secondary">
-                {selectedSubjects.length} subject{selectedSubjects.length !== 1 ? 's' : ''} selected
-              </p>
-              <p className="text-xs text-text-muted mt-1">
-                Scroll to see all subjects
-              </p>
+          <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+            {/* Sticky Selected Subjects Box */}
+            <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-card-border/30 pb-4 mb-4 flex-shrink-0">
+              <div className="gradient-outline rounded-lg p-1">
+                <div className="gradient-outline-content rounded-lg bg-surface p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-semibold text-text-primary">Selected Subjects</h3>
+                    <span className="text-xs text-text-muted">
+                      {selectedSubjects.length} of {apSubjects.length}
+                    </span>
+                  </div>
+                  {selectedSubjects.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {selectedSubjects.map((subject) => (
+                        <span
+                          key={subject}
+                          className="text-xs bg-gradient-purple/10 text-gradient-purple px-2 py-1 rounded-full border border-gradient-purple/20"
+                        >
+                          {subject}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-text-muted">Select subjects below to get started</p>
+                  )}
+                </div>
+              </div>
             </div>
             
-            <div className="flex-1 overflow-y-auto space-y-3 px-1 pb-24 scrollbar-thin scrollbar-thumb-gradient-purple scrollbar-track-surface-muted">
+            {/* Scrollable Subject List */}
+            <div className="flex-1 overflow-y-auto space-y-3 px-1 pb-24">
               {apSubjects.map((subject, index) => (
                 <div
                   key={subject}
-                  style={{ animationDelay: `${index * 20}ms` }}
-                  className={`gradient-outline rounded-lg p-1 cursor-pointer transition-all duration-500 ease-out hover:scale-[1.02] hover:shadow-lg animate-in fade-in slide-in-from-left-2 ${
+                  className={`gradient-outline rounded-lg p-1 cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-lg ${
                     selectedSubjects.includes(subject) ? 'gradient-outline-selected' : ''
                   }`}
                   onClick={() => handleSubjectToggle(subject)}
                 >
                   <div className="gradient-outline-content rounded-lg bg-surface p-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-text-primary transition-colors duration-300">
+                      <span className="text-sm font-medium text-text-primary">
                         {subject}
                       </span>
-                      <div className={`transition-all duration-500 ease-out ${
-                        selectedSubjects.includes(subject) ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-0 -rotate-90'
+                      <div className={`transition-all duration-200 ${
+                        selectedSubjects.includes(subject) ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
                       }`}>
                         <Check className="w-5 h-5 text-gaming-success" />
                       </div>
@@ -262,22 +281,22 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
           </div>
         )}
 
-        {/* Continue Button - Fixed positioning with semi-transparent backdrop */}
-        <div className={`fixed bottom-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
-          canContinue ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
-        }`}>
-          <div className="backdrop-blur-md bg-background/95 border-t border-card-border/30 px-6 py-4 shadow-lg">
-            <div className="max-w-md mx-auto">
-              <GradientButton
-                size="lg"
-                className="w-full transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-lg active:scale-[0.97]"
-                onClick={handleContinue}
-              >
-                Continue
-              </GradientButton>
+        {/* Continue Button - Fixed positioning */}
+        {canContinue && (
+          <div className="fixed bottom-0 left-0 right-0 z-50 animate-fade-in">
+            <div className="backdrop-blur-md bg-background/95 border-t border-card-border/30 px-6 py-4 shadow-lg">
+              <div className="max-w-md mx-auto">
+                <GradientButton
+                  size="lg"
+                  className="w-full transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                  onClick={handleContinue}
+                >
+                  Continue
+                </GradientButton>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

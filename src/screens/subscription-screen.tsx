@@ -90,7 +90,7 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
 
       // If admin, bypass Stripe and grant subscription directly
       if (isAdmin) {
-        await supabase
+        const { error: upsertError } = await supabase
           .from('user_preferences')
           .upsert({
             user_id: user.id,
@@ -100,13 +100,21 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
             onConflict: 'user_id'
           });
 
+        if (upsertError) {
+          throw upsertError;
+        }
+
         toast({
           title: "Success!",
           description: "Admin access granted. Subscription activated.",
         });
 
-        // Trigger plan selection callback
-        onSelectPlan(selectedPlan, billingCycle);
+        // Small delay to show success message, then trigger callback
+        setTimeout(() => {
+          setLoading(false);
+          onSelectPlan(selectedPlan, billingCycle);
+        }, 500);
+        
         return;
       }
 
