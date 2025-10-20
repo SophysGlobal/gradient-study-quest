@@ -42,6 +42,10 @@ export const usePromptLimits = () => {
         return false;
       }
 
+      // Admins always have unlimited/premium access
+      const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' });
+      if (isAdmin) return true;
+
       const { data: preferences, error } = await supabase
         .from('user_preferences')
         .select('subscription_plan')

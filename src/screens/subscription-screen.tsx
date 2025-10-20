@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GradientButton } from '@/components/ui/gradient-button';
 import { GradientCard } from '@/components/ui/gradient-card';
 import { ParticleBackground } from '@/components/animations/particle-background';
@@ -64,6 +64,25 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
   const { toast } = useToast();
 
   const subscriptionProducts = getProductsByMode('subscription');
+  const [priceMap, setPriceMap] = useState<Record<string, { unit_amount: number; currency: string; interval?: 'month' | 'year' }>>({});
+
+  useEffect(() => {
+    const fetchPrices = async () => {
+      const priceIds = subscriptionProducts.map(p => p.priceId);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const { data, error } = await supabase.functions.invoke('stripe-prices', {
+        body: { price_ids: priceIds },
+        headers: { Authorization: `Bearer ${session.access_token}` }
+      });
+      if (!error && Array.isArray(data)) {
+        const map: Record<string, { unit_amount: number; currency: string; interval?: 'month' | 'year' }> = {};
+        data.forEach((p: any) => { map[p.id] = { unit_amount: p.unit_amount, currency: p.currency, interval: p.recurring?.interval }; });
+        setPriceMap(map);
+      }
+    };
+    fetchPrices();
+  }, []);
 
   const handlePlanSelect = (planId: string) => {
     setSelectedPlan(planId);
@@ -88,33 +107,14 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
         _role: 'admin'
       });
 
-      // If admin, bypass Stripe and grant subscription directly
+      // If admin, bypass Stripe and proceed without modifying preferences
       if (isAdmin) {
-        const { error: upsertError } = await supabase
-          .from('user_preferences')
-          .upsert({
-            user_id: user.id,
-            subscription_plan: selectedPlan,
-            updated_at: new Date().toISOString()
-          }, {
-            onConflict: 'user_id'
-          });
-
-        if (upsertError) {
-          throw upsertError;
-        }
-
         toast({
-          title: "Success!",
-          description: "Admin access granted. Subscription activated.",
+          title: "Admin bypass",
+          description: "Admin access granted. Skipping payment.",
         });
-
-        // Small delay to show success message, then trigger callback
-        setTimeout(() => {
-          setLoading(false);
-          onSelectPlan(selectedPlan, billingCycle);
-        }, 500);
-        
+        setLoading(false);
+        onSelectPlan(selectedPlan, billingCycle);
         return;
       }
 
@@ -144,16 +144,7 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
         throw new Error('No active session');
       }
 
-      // Save plan selection to database before checkout
-      await supabase
-        .from('user_preferences')
-        .upsert({
-          user_id: user.id,
-          subscription_plan: selectedPlan,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id'
-        });
+      // Do not modify user_preferences here to avoid RLS trigger errors
 
       // Create checkout session
       const { data, error } = await supabase.functions.invoke('stripe-checkout', {
@@ -216,13 +207,11 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
   const yearlyDiscount = (planId: string) => {
     const monthlyProduct = getProductForPlan(planId, 'monthly');
     const yearlyProduct = getProductForPlan(planId, 'yearly');
-    
     if (!monthlyProduct || !yearlyProduct) return 0;
-    
-    const yearlyPrice = yearlyProduct.price;
-    const monthlyYearlyPrice = monthlyProduct.price * 12;
-    
-    return Math.round(((monthlyYearlyPrice - yearlyPrice) / monthlyYearlyPrice) * 100);
+    const monthly = priceMap[monthlyProduct.priceId]?.unit_amount ? priceMap[monthlyProduct.priceId].unit_amount / 100 : monthlyProduct.price;
+    const yearly = priceMap[yearlyProduct.priceId]?.unit_amount ? priceMap[yearlyProduct.priceId].unit_amount / 100 : yearlyProduct.price;
+    const monthlyYearlyPrice = monthly * 12;
+    return Math.round(((monthlyYearlyPrice - yearly) / monthlyYearlyPrice) * 100);
   };
 
   return (
@@ -302,16 +291,26 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
                       </div>
                       <div>
                         <h3 className="font-bold text-lg text-text-primary">{plan.name}</h3>
-                        {!isEnterprise && product && (
-                          <div className="flex items-center gap-2">
-                            <span className="text-2xl font-bold gradient-text">
-                              ${billingCycle === 'monthly' ? product.price : (product.price / 12).toFixed(2)}
-                            </span>
-                            <span className="text-sm text-text-muted">
-                              /{billingCycle === 'monthly' ? 'month' : 'month'}
-                            </span>
-                          </div>
-                        )}
+                            {!isEnterprise && product && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-2xl font-bold gradient-text">
+                                  {
+                                    (() => {
+                                      if (billingCycle === 'monthly') {
+                                        const live = priceMap[product.priceId]?.unit_amount;
+                                        return `$${(live ? live / 100 : product.price).toFixed(2)}`;
+                                      } else {
+                                        const yearlyProduct = getProductForPlan(plan.id, 'yearly');
+                                        const liveYear = yearlyProduct ? priceMap[yearlyProduct.priceId]?.unit_amount : undefined;
+                                        const yearPrice = yearlyProduct ? (liveYear ? liveYear / 100 : yearlyProduct.price) : 0;
+                                        return `$${(yearPrice / 12).toFixed(2)}`;
+                                      }
+                                    })()
+                                  }
+                                </span>
+                                <span className="text-sm text-text-muted">/month</span>
+                              </div>
+                            )}
                       </div>
                     </div>
                     {isEnterprise && (
@@ -324,7 +323,16 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
                   {/* Yearly Savings */}
                   {!isEnterprise && billingCycle === 'yearly' && product && (
                     <div className="text-sm text-gaming-success bg-gaming-success/10 px-3 py-2 rounded-lg">
-                      Save ${((getProductForPlan(plan.id, 'monthly')?.price || 0) * 12 - product.price).toFixed(0)} per year ({yearlyDiscount(plan.id)}% off)
+                      {
+                        (() => {
+                          const monthlyProduct = getProductForPlan(plan.id, 'monthly');
+                          const yearlyProduct = getProductForPlan(plan.id, 'yearly');
+                          const monthly = monthlyProduct ? (priceMap[monthlyProduct.priceId]?.unit_amount ? priceMap[monthlyProduct.priceId].unit_amount / 100 : monthlyProduct.price) : 0;
+                          const yearly = yearlyProduct ? (priceMap[yearlyProduct.priceId]?.unit_amount ? priceMap[yearlyProduct.priceId].unit_amount / 100 : yearlyProduct.price) : 0;
+                          const saving = monthly * 12 - yearly;
+                          return <>Save ${saving.toFixed(0)} per year ({yearlyDiscount(plan.id)}% off)</>;
+                        })()
+                      }
                     </div>
                   )}
 

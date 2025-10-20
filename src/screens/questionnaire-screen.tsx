@@ -73,10 +73,10 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
   const canContinue = (step === 1 && usage) || (step === 2 && selectedSubjects.length > 0) || (step === 3 && selectedTheme);
 
   return (
-    <div className="h-screen bg-background relative flex flex-col overflow-hidden">
+    <div className="h-screen bg-background relative flex flex-col overflow-hidden min-h-0">
       <ParticleBackground />
 
-      <div className="relative z-10 flex-1 max-w-md mx-auto w-full flex flex-col p-6">
+      <div className="relative z-10 flex-1 max-w-md mx-auto w-full flex flex-col p-6 min-h-0">
         {/* Back Button */}
         {step > 1 && (
           <Button
@@ -123,8 +123,7 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
               selectable
               selected={usage === 'school'}
               onClick={() => handleUsageSelect('school')}
-              className="cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] animate-slide-up"
-              style={{ animationDelay: '100ms' }}
+              className="cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] animate-fade-in"
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -141,8 +140,7 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
               selectable
               selected={usage === 'personal'}
               onClick={() => handleUsageSelect('personal')}
-              className="cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] animate-slide-up"
-              style={{ animationDelay: '200ms' }}
+              className="cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] animate-fade-in"
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -159,38 +157,38 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
 
         {/* Step 2: Subject Selection */}
         {step === 2 && (
-          <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-            {/* Sticky Selected Subjects Box */}
-            <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-card-border/30 pb-4 mb-4 flex-shrink-0">
-              <div className="gradient-outline rounded-lg p-1">
-                <div className="gradient-outline-content rounded-lg bg-surface p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-sm font-semibold text-text-primary">Selected Subjects</h3>
-                    <span className="text-xs text-text-muted">
-                      {selectedSubjects.length} of {apSubjects.length}
-                    </span>
-                  </div>
-                  {selectedSubjects.length > 0 ? (
-                    <div className="flex flex-wrap gap-2">
-                      {selectedSubjects.map((subject) => (
-                        <span
-                          key={subject}
-                          className="text-xs bg-gradient-purple/10 text-gradient-purple px-2 py-1 rounded-full border border-gradient-purple/20"
-                        >
-                          {subject}
-                        </span>
-                      ))}
+          <div className="flex-1 min-h-0">
+            <div className="h-full overflow-y-auto px-1 pb-24 space-y-3">
+              {/* Sticky Selected Subjects Box */}
+              <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-card-border/30 pb-4">
+                <div className="gradient-outline rounded-lg p-1">
+                  <div className="gradient-outline-content rounded-lg bg-surface p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-sm font-semibold text-text-primary">Selected Subjects</h3>
+                      <span className="text-xs text-text-muted">
+                        {selectedSubjects.length} of {apSubjects.length}
+                      </span>
                     </div>
-                  ) : (
-                    <p className="text-xs text-text-muted">Select subjects below to get started</p>
-                  )}
+                    {selectedSubjects.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {selectedSubjects.map((subject) => (
+                          <span
+                            key={subject}
+                            className="text-xs bg-gradient-purple/10 text-gradient-purple px-2 py-1 rounded-full border border-gradient-purple/20"
+                          >
+                            {subject}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-text-muted">Select subjects below to get started</p>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            {/* Scrollable Subject List */}
-            <div className="flex-1 overflow-y-auto space-y-3 px-1 pb-24">
-              {apSubjects.map((subject, index) => (
+
+              {/* Scrollable Subject List */}
+              {apSubjects.map((subject) => (
                 <div
                   key={subject}
                   className={`gradient-outline rounded-lg p-1 cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-lg ${
@@ -228,8 +226,7 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
                 selectable
                 selected={selectedTheme === 'light'}
                 onClick={() => handleThemeSelect('light')}
-                className="cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] animate-slide-up"
-                style={{ animationDelay: '100ms' }}
+                className="cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] animate-fade-in"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
@@ -255,8 +252,7 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
                 selectable
                 selected={selectedTheme === 'dark'}
                 onClick={() => handleThemeSelect('dark')}
-                className="cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] animate-slide-up"
-                style={{ animationDelay: '200ms' }}
+                className="cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] animate-fade-in"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
@@ -288,7 +284,7 @@ export const QuestionnaireScreen: React.FC<QuestionnaireScreenProps> = ({
               <div className="max-w-md mx-auto">
                 <GradientButton
                   size="lg"
-                  className="w-full transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                  className="w-full animate-fade-in"
                   onClick={handleContinue}
                 >
                   Continue
