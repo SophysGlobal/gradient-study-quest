@@ -42,6 +42,28 @@ const App = () => {
         if (session?.user) {
           setUser(session.user);
           
+          // Check if user is admin
+          const { data: isAdmin } = await supabase.rpc('has_role', {
+            _user_id: session.user.id,
+            _role: 'admin'
+          });
+          
+          // If admin, go straight to dashboard
+          if (isAdmin) {
+            const adminUserData = {
+              name: session.user.email?.split('@')[0] || 'Admin',
+              email: session.user.email || '',
+              usage: 'admin',
+              subjects: [],
+              theme: 'dark'
+            };
+            setUserData(adminUserData);
+            localStorage.setItem('ada-user-data', JSON.stringify(adminUserData));
+            setCurrentScreen('dashboard');
+            setLoading(false);
+            return;
+          }
+          
           // Regular user flow
           const savedUserData = localStorage.getItem('ada-user-data');
           if (savedUserData) {
@@ -84,6 +106,27 @@ const App = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
         setUser(session.user);
+        
+        // Check if user is admin
+        const { data: isAdmin } = await supabase.rpc('has_role', {
+          _user_id: session.user.id,
+          _role: 'admin'
+        });
+        
+        // If admin, go straight to dashboard
+        if (isAdmin) {
+          const adminUserData = {
+            name: session.user.email?.split('@')[0] || 'Admin',
+            email: session.user.email || '',
+            usage: 'admin',
+            subjects: [],
+            theme: 'dark'
+          };
+          setUserData(adminUserData);
+          localStorage.setItem('ada-user-data', JSON.stringify(adminUserData));
+          setCurrentScreen('dashboard');
+          return;
+        }
         
         // Navigate user after successful login
         const savedUserData = localStorage.getItem('ada-user-data');
@@ -167,8 +210,24 @@ const App = () => {
     setCurrentScreen('subscription');
   };
 
-  const handlePlanSelect = (plan: string, billing: 'monthly' | 'yearly') => {
-    // Subscription screen handles the actual checkout
+  const handlePlanSelect = async (plan: string, billing: 'monthly' | 'yearly') => {
+    // Check if user is admin
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (authUser) {
+      const { data: isAdmin } = await supabase.rpc('has_role', {
+        _user_id: authUser.id,
+        _role: 'admin'
+      });
+      
+      if (isAdmin) {
+        // Admin user - bypass subscription and go to dashboard
+        console.log('Admin detected - bypassing to dashboard');
+        setCurrentScreen('dashboard');
+        return;
+      }
+    }
+    
+    // Regular users - Stripe checkout is handled in SubscriptionScreen
     console.log(`Selected plan: ${plan} (${billing})`);
   };
 
