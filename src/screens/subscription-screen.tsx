@@ -70,14 +70,32 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
     const fetchPrices = async () => {
       const priceIds = subscriptionProducts.map(p => p.priceId);
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
+      if (!session) {
+        console.log('No session, skipping price fetch');
+        return;
+      }
+      
+      console.log('Fetching prices for:', priceIds);
       const { data, error } = await supabase.functions.invoke('stripe-prices', {
         body: { price_ids: priceIds },
         headers: { Authorization: `Bearer ${session.access_token}` }
       });
-      if (!error && Array.isArray(data)) {
+      
+      if (error) {
+        console.error('Error fetching Stripe prices:', error);
+        return;
+      }
+      
+      if (Array.isArray(data)) {
+        console.log('Stripe prices received:', data);
         const map: Record<string, { unit_amount: number; currency: string; interval?: 'month' | 'year' }> = {};
-        data.forEach((p: any) => { map[p.id] = { unit_amount: p.unit_amount, currency: p.currency, interval: p.recurring?.interval }; });
+        data.forEach((p: any) => { 
+          map[p.id] = { 
+            unit_amount: p.unit_amount, 
+            currency: p.currency, 
+            interval: p.recurring?.interval 
+          }; 
+        });
         setPriceMap(map);
       }
     };
@@ -102,19 +120,27 @@ export const SubscriptionScreen: React.FC<SubscriptionScreenProps> = ({
       }
 
       // Check if user is admin
-      const { data: isAdmin } = await supabase.rpc('has_role', {
+      const { data: isAdmin, error: roleError } = await supabase.rpc('has_role', {
         _user_id: user.id,
         _role: 'admin'
       });
 
-      // If admin, bypass Stripe and proceed without modifying preferences
+      if (roleError) {
+        console.error('Role check error:', roleError);
+      }
+
+      // If admin, bypass Stripe completely
       if (isAdmin) {
+        console.log('Admin detected, bypassing payment');
         toast({
-          title: "Admin bypass",
-          description: "Admin access granted. Skipping payment.",
+          title: "Admin Access",
+          description: "Welcome! Admin privileges granted.",
         });
-        setLoading(false);
-        onSelectPlan(selectedPlan, billingCycle);
+        // Brief delay to show the toast before proceeding
+        setTimeout(() => {
+          setLoading(false);
+          onSelectPlan(selectedPlan, billingCycle);
+        }, 500);
         return;
       }
 
